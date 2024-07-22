@@ -31,7 +31,7 @@ if (isset($_GET['file'])) {
         $lines = explode("\n", $file_content);
 
         // 输出表格
-        echo "<table class="table table-striped table-bordered table-hover mp20">";
+        echo '<table class="table table-striped table-bordered table-hover mp20">';
         foreach ($lines as $line) {
             if (trim($line) !== "") {
                 echo "<tr>";
