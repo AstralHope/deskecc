@@ -22,8 +22,8 @@
         <thead>
             <tr>
                 <th>集群名</th>
-                <th>网段1</th>
-                <th>网段2</th>
+                <th>Node网段</th>
+                <th>Pod网段</th>
             </tr>
         </thead>
         <tbody>
@@ -50,6 +50,7 @@
     <label for="ipInput">输入IP地址：</label>
     <input type="text" id="ipInput" placeholder="例如：192.168.1.1">
     <button onclick="filterTable()" class="btn btn-default btn-sm">筛选</button>
+    <button onclick="clearFilter()" class="btn btn-default btn-sm">清除筛选</button>
 
     <script>
         // 检查输入的IP地址是否在给定的网段内
@@ -91,6 +92,17 @@
 
                 row.style.display = match ? "" : "none";
             }
+        }
+
+        function clearFilter() {
+            const table = document.getElementById("clusterTable").getElementsByTagName("tbody")[0];
+            const rows = table.getElementsByTagName("tr");
+
+            for (let row of rows) {
+                row.style.display = "";
+            }
+
+            document.getElementById("ipInput").value = "";
         }
     </script>
 </body>
