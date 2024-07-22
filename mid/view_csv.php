@@ -15,6 +15,8 @@
 </head>
 <body>
 
+<input type="text" id="filterInput" placeholder="筛选表格...">
+
 <?php
 // 检查是否设置了文件参数
 if (isset($_GET['file'])) {
@@ -50,7 +52,7 @@ if (isset($_GET['file'])) {
         });
 
         // 输出表格
-        echo "<table id='dataTable'>";
+        echo "<table id='dataTable' class='table table-striped table-bordered table-hover mp20'>";
         // 输出表头
         echo "<thead><tr>";
         foreach ($header as $cell) {
