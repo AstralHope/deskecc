@@ -15,6 +15,9 @@
 </head>
 <body>
 
+    
+<input type="text" id="filterInput" placeholder="筛选表格...">
+
 <?php
 // 检查是否设置了文件参数
 if (isset($_GET['file'])) {
@@ -36,26 +39,46 @@ if (isset($_GET['file'])) {
         foreach ($lines as $line) {
             if (trim($line) !== "") {
                 // 拆分每行内容
+                $lines = explode("\n", $file_content);
+
+        // 分离表头和数据行
+        $header = [];
+        $rows = [];
+        foreach ($lines as $index => $line) {
+            if (trim($line) !== "") {
                 $cells = explode(",", $line);
-                if ($first_line) {
-                    echo "<thead><tr>";
-                    foreach ($cells as $cell) {
-                        echo "<th>" . htmlspecialchars(trim($cell)) . "</th>";
-                    }
-                    echo "</tr></thead><tbody>";
-                    $first_line = false;
+                if ($index == 0) {
+                    $header = $cells;
                 } else {
-                    echo "<tr>";
-                    foreach ($cells as $cell) {
-                        echo "<td>" . htmlspecialchars(trim($cell)) . "</td>";
-                    }
-                    echo "</tr>";
+                    $rows[] = $cells;
                 }
             }
         }
-        echo "</table>";
 
+        // 将 master 行移到最前面
+        usort($rows, function($a, $b) {
+            return (trim($a[2]) === 'master') ? -1 : 1;
+        });
 
+        // 输出表格
+        echo "<table id='dataTable'>";
+        // 输出表头
+        echo "<thead><tr>";
+        foreach ($header as $cell) {
+            echo "<th>" . htmlspecialchars(trim($cell)) . "</th>";
+        }
+        echo "</tr></thead><tbody>";
+
+        // 输出数据行
+        foreach ($rows as $row) {
+            echo "<tr>";
+            foreach ($row as $cell) {
+                echo "<td>" . htmlspecialchars(trim($cell)) . "</td>";
+            }
+            echo "</tr>";
+        }
+
+        echo "</tbody></table>";
     } else {
         echo "文件不存在或不是 .csv文件。";
     }
@@ -64,5 +87,37 @@ if (isset($_GET['file'])) {
 }
 ?>
 
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterInput = document.getElementById('filterInput');
+    const table = document.getElementById('dataTable');
+    const tbody = table.getElementsByTagName('tbody')[0];
+    const rows = Array.from(tbody.getElementsByTagName('tr'));
+
+    filterInput.addEventListener('keyup', function() {
+        const filter = filterInput.value.toLowerCase();
+        rows.forEach(row => {
+            const cells = Array.from(row.getElementsByTagName('td'));
+            const match = cells.some(cell => cell.textContent.toLowerCase().includes(filter));
+            row.style.display = match ? '' : 'none';
+        });
+    });
+
+    const headers = Array.from(table.getElementsByTagName('th'));
+    headers.forEach((header, index) => {
+        header.addEventListener('click', function() {
+            const ascending = header.classList.toggle('ascending');
+            rows.sort((a, b) => {
+                const aText = a.getElementsByTagName('td')[index].textContent.trim();
+                const bText = b.getElementsByTagName('td')[index].textContent.trim();
+                return ascending ? aText.localeCompare(bText) : bText.localeCompare(aText);
+            });
+            tbody.append(...rows);
+        });
+    });
+});
+</script>
 </body>
 </html>
