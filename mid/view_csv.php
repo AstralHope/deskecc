@@ -15,9 +15,6 @@
 </head>
 <body>
 
-    
-<input type="text" id="filterInput" placeholder="筛选表格...">
-
 <?php
 // 检查是否设置了文件参数
 if (isset($_GET['file'])) {
@@ -32,14 +29,6 @@ if (isset($_GET['file'])) {
         $file_content = file_get_contents("/data/deskecc/ack/clusterinfo/" . $filename);
         // 将内容按行分割
         $lines = explode("\n", $file_content);
-
-        // 输出表格
-        echo '<table class="table table-striped table-bordered table-hover mp20">';
-        $first_line = true;
-        foreach ($lines as $line) {
-            if (trim($line) !== "") {
-                // 拆分每行内容
-                $lines = explode("\n", $file_content);
 
         // 分离表头和数据行
         $header = [];
@@ -79,6 +68,8 @@ if (isset($_GET['file'])) {
         }
 
         echo "</tbody></table>";
+
+
     } else {
         echo "文件不存在或不是 .csv文件。";
     }
