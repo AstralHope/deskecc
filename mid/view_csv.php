@@ -16,6 +16,8 @@
 <body>
 
 <input type="text" id="filterInput" placeholder="筛选表格...">
+<button id="filterButton" class="btn btn-default btn-sm">筛选</button>
+<button id="clearButton" class="btn btn-default btn-sm">清除筛选</button>
 
 <?php
 // 检查是否设置了文件参数
@@ -52,7 +54,7 @@ if (isset($_GET['file'])) {
         });
 
         // 输出表格
-        echo "<table id='dataTable' class='table table-striped table-bordered table-hover mp20'>";
+        echo "<table id='dataTable'>";
         // 输出表头
         echo "<thead><tr>";
         foreach ($header as $cell) {
@@ -63,8 +65,12 @@ if (isset($_GET['file'])) {
         // 输出数据行
         foreach ($rows as $row) {
             echo "<tr>";
-            foreach ($row as $cell) {
-                echo "<td>" . htmlspecialchars(trim($cell)) . "</td>";
+            foreach ($row as $index => $cell) {
+                if ($index == 3) { // 假设第四列是索引3
+                    echo "<td><a href='view_txt.php?file=" . urlencode(trim($cell)) . ".txt'>" . htmlspecialchars(trim($cell)) . "</a></td>";
+                } else {
+                    echo "<td>" . htmlspecialchars(trim($cell)) . "</td>";
+                }
             }
             echo "</tr>";
         }
