@@ -30,7 +30,7 @@ if (is_dir($dir)) {
             // 仅处理 .csv 文件
             if (pathinfo($file, PATHINFO_EXTENSION) === 'csv') {
                 // 输出超链接
-                echo "<a href='view_text.php?file=" . urlencode($file) . "'>" . $file . "</a><br>";
+                echo "<a href='view_csv.php?file=" . urlencode($file) . "'>" . $file . "</a><br>";
             }
         }
         // 关闭目录句柄

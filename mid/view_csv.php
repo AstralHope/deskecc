@@ -24,11 +24,27 @@ if (isset($_GET['file'])) {
     $filename = str_replace("/", "", $filename); // 防止路径遍历攻击
 
     // 检查文件是否存在
-    if (file_exists("/data/deskecc/ack/podinfo/" . $filename) && (pathinfo($filename, PATHINFO_EXTENSION) === 'txt') || (pathinfo($filename, PATHINFO_EXTENSION) === 'csv') ) {
-        // 读取文件内容并显示
-        //$file_content = file_get_contents("/data/deskecc/ack/podinfo/" . $filename);
+    if (file_exists("/data/deskecc/ack/clusterinfo/" . $filename) && (pathinfo($filename, PATHINFO_EXTENSION) === 'txt') || (pathinfo($filename, PATHINFO_EXTENSION) === 'csv') ) {
+        // 读取文件内容
         $file_content = file_get_contents("/data/deskecc/ack/clusterinfo/" . $filename);
-        echo "<pre>" . htmlspecialchars($file_content) . "</pre>";
+        // 将内容按行分割
+        $lines = explode("\n", $file_content);
+
+        // 输出表格
+        echo "<table>";
+        foreach ($lines as $line) {
+            if (trim($line) !== "") {
+                echo "<tr>";
+                $cells = explode("数量", $line); // 使用“数量”作为分隔符
+                foreach ($cells as $cell) {
+                    echo "<td>" . htmlspecialchars(trim($cell)) . "</td>";
+                }
+                echo "</tr>";
+            }
+        }
+        echo "</table>";
+
+        
     } else {
         echo "文件不存在或不是 .txt 文件。";
     }
