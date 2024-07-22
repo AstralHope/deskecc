@@ -32,21 +32,32 @@ if (isset($_GET['file'])) {
 
         // 输出表格
         echo '<table class="table table-striped table-bordered table-hover mp20">';
+        $first_line = true;
         foreach ($lines as $line) {
             if (trim($line) !== "") {
-                echo "<tr>";
-                $cells = explode("数量", $line); // 使用“数量”作为分隔符
-                foreach ($cells as $cell) {
-                    echo "<td>" . htmlspecialchars(trim($cell)) . "</td>";
+                // 拆分每行内容
+                $cells = explode(",", $line);
+                if ($first_line) {
+                    echo "<thead><tr>";
+                    foreach ($cells as $cell) {
+                        echo "<th>" . htmlspecialchars(trim($cell)) . "</th>";
+                    }
+                    echo "</tr></thead><tbody>";
+                    $first_line = false;
+                } else {
+                    echo "<tr>";
+                    foreach ($cells as $cell) {
+                        echo "<td>" . htmlspecialchars(trim($cell)) . "</td>";
+                    }
+                    echo "</tr>";
                 }
-                echo "</tr>";
             }
         }
         echo "</table>";
 
 
     } else {
-        echo "文件不存在或不是 .txt 文件。";
+        echo "文件不存在或不是 .csv文件。";
     }
 } else {
     echo "未指定文件。";
