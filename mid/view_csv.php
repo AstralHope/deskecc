@@ -54,7 +54,7 @@ if (isset($_GET['file'])) {
         });
 
         // 输出表格
-        echo "<table id='dataTable'>";
+        echo "<table id='dataTable' class='table table-striped table-bordered table-hover mp20'>";
         // 输出表头
         echo "<thead><tr>";
         foreach ($header as $cell) {
@@ -91,16 +91,25 @@ if (isset($_GET['file'])) {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const filterInput = document.getElementById('filterInput');
+    const filterButton = document.getElementById('filterButton');
+    const clearButton = document.getElementById('clearButton');
     const table = document.getElementById('dataTable');
     const tbody = table.getElementsByTagName('tbody')[0];
     const rows = Array.from(tbody.getElementsByTagName('tr'));
 
-    filterInput.addEventListener('keyup', function() {
+    filterButton.addEventListener('click', function() {
         const filter = filterInput.value.toLowerCase();
         rows.forEach(row => {
             const cells = Array.from(row.getElementsByTagName('td'));
             const match = cells.some(cell => cell.textContent.toLowerCase().includes(filter));
             row.style.display = match ? '' : 'none';
+        });
+    });
+
+    clearButton.addEventListener('click', function() {
+        filterInput.value = '';
+        rows.forEach(row => {
+            row.style.display = '';
         });
     });
 
