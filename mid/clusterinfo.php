@@ -56,7 +56,7 @@ if (!empty($Files)) {
     echo "<ul>";
     foreach ($Files as $file) {
         // 生成相对路径链接
-        $relativePath = str_replace($rootDir . '/', '', $file);
+        $relativePath = str_replace($dir . '/', '', $file);
         echo "<li><a href='view_csv.php?file=" . urlencode($relativePath) . "'>" . htmlspecialchars($relativePath) . "</a></li>";
     }
     echo "</ul>";
