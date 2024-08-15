@@ -25,7 +25,7 @@ if (isset($_GET['file'])) {
     // 获取文件名并转义
     $filename = $_GET['file'];
     //$filename = basename($filename);
-    $filename = str_replace("/", "", $filename); // 防止路径遍历攻击
+    //$filename = str_replace("/", "", $filename); // 防止路径遍历攻击
 
     // 检查文件是否存在
     if (file_exists("/data/deskecc/ack/clusterinfo/" . $filename) && (pathinfo($filename, PATHINFO_EXTENSION) === 'txt') || (pathinfo($filename, PATHINFO_EXTENSION) === 'csv') ) {
