@@ -22,26 +22,20 @@
 $dir = "/data/deskecc/ack/clusterinfo/";
 
 // 遍历根目录及其一级子目录中的所有 .txt 和 .csv 文件
-function getFiles($dir) {
+function getFiles($dir, $pattern) {
     $files = [];
     foreach (scandir($dir) as $item) {
         if ($item == '.' || $item == '..') continue;
         $filePath = $dir . '/' . $item;
-        if (is_file($filePath)) {
-            $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-            if ($extension === 'txt' || $extension === 'csv') {
-                $files[] = $filePath;
-            }
+        if (is_file($filePath) && fnmatch($pattern, $item)) {
+            $files[] = $filePath;
         } elseif (is_dir($filePath)) {
             // 仅遍历一级子目录
             foreach (scandir($filePath) as $subItem) {
                 if ($subItem == '.' || $subItem == '..') continue;
                 $subFilePath = $filePath . '/' . $subItem;
-                if (is_file($subFilePath)) {
-                    $extension = pathinfo($subFilePath, PATHINFO_EXTENSION);
-                    if ($extension === 'txt' || $extension === 'csv') {
-                        $files[] = $subFilePath;
-                    }
+                if (is_file($subFilePath) && fnmatch($pattern, $subItem)) {
+                    $files[] = $subFilePath;
                 }
             }
         }
@@ -50,7 +44,7 @@ function getFiles($dir) {
 }
 
 // 获取所有 .txt 和 .csv 文件
-$Files = getFiles($dir);
+$Files = getFiles($dir, '*cluster_info.csv');
 
 if (!empty($Files)) {
     echo "<ul>";
