@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<h2>生产集群信息合集：</h2>
+<h2>生产节点信息合集：</h2>
 
 <?php
 // 指定目录路径
@@ -44,7 +44,7 @@ function getFiles($dir, $pattern) {
 }
 
 // 获取所有 .txt 和 .csv 文件
-$Files = getFiles($dir, '*node_info.csv');
+$Files = getFiles($dir, '*nodes_info.csv');
 
 if (!empty($Files)) {
     echo "<ul>";
