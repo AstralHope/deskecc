@@ -32,8 +32,19 @@ function displayCsv($filePath) {
     }
     $output .= '</tr></thead><tbody id="tableBody"></tbody></table>';
 
+    // 显示总项数和每页行数选择
+    $output .= '<div style="margin-top: 10px;">';
+    $output .= '共 <span id="totalItems">0</span> 项';
+    $output .= ' 每页显示: <select id="rowsPerPage" onchange="changeRowsPerPage()">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>';
+    $output .= '</div>';
+
     // 翻页控件
-    $output .= '<div id="pagination"></div>';
+    $output .= '<div id="pagination" style="margin-top: 10px;"></div>';
 
     // 数据总数和每页显示的数量
     $output .= '<script>
@@ -45,6 +56,9 @@ function displayCsv($filePath) {
         function renderTable(page = 1) {
             var start = (page - 1) * rowsPerPage + 1;
             var end = Math.min(start + rowsPerPage - 1, data.length - 1);
+
+            // 更新总项数
+            document.getElementById("totalItems").textContent = data.length - 1;
 
             // 更新分页
             updatePagination(page);
@@ -105,6 +119,12 @@ function displayCsv($filePath) {
             // 更新数据并渲染第一页
             data = filteredData;
             currentPage = 1;
+            renderTable(currentPage);
+        }
+
+        // 改变每页显示的行数
+        function changeRowsPerPage() {
+            rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
             renderTable(currentPage);
         }
 
