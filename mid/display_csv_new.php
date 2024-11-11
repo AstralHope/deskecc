@@ -24,7 +24,7 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
     $fileName = pathinfo($filePath, PATHINFO_FILENAME);
 
     if (!file_exists($fullFilePath) || !is_readable($fullFilePath)) {
-        return $fullFilePath.'文件不存在或不可读取';
+        return '文件不存在或不可读取';
     }
 
     $data = [];
@@ -59,7 +59,7 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
         if (in_array($index + 1, $hiddenColumnsArray)) {
             continue;
         }
-        $output .= '<th>' . htmlspecialchars($header) . '</th>';
+        $output .= '<th onclick="sortTable(' . $index . ')">' . htmlspecialchars($header) . '</th>';
     }
     $output .= '</tr></thead><tbody id="tableBody"></tbody></table>';
 
@@ -82,6 +82,7 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
         var extraColumnIndex = ' . ($extraColumnIndex !== null ? (int)$extraColumnIndex : 'null') . ';
         var extraFunction = ' . $extraJsFunction . ';
         var hiddenColumns = ' . json_encode($hiddenColumnsArray) . ';  // 传递隐藏列信息
+        var sortAscending = true; // 默认升序
         
         // 渲染表格数据
         function renderTable(page = 1) {
@@ -145,6 +146,24 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
                 nextBtn.onclick = function() { renderTable(page + 1); };
                 paginationDiv.appendChild(nextBtn);
             }
+        }
+
+        // 排序表格
+        function sortTable(columnIndex) {
+            var isNumeric = !isNaN(data[1][columnIndex]); // 判断该列是否为数字类型
+            data.sort(function(a, b) {
+                var cellA = a[columnIndex];
+                var cellB = b[columnIndex];
+                if (isNumeric) {
+                    return sortAscending ? cellA - cellB : cellB - cellA; // 数字排序
+                } else {
+                    return sortAscending 
+                        ? cellA.localeCompare(cellB) 
+                        : cellB.localeCompare(cellA); // 字符串排序
+                }
+            });
+            sortAscending = !sortAscending; // 切换排序顺序
+            renderTable(currentPage); // 重新渲染表格
         }
 
         // 搜索功能
