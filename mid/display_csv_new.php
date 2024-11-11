@@ -16,8 +16,9 @@ function makeLink($text) {
             </form>';
 }
 
+<?php
 function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, $hiddenColumns = '') {
-    // 定义基础路径常量
+    // 定义基础路径常量为空
     $BASEPATH = '';
     $fullFilePath = $BASEPATH . $filePath;
     
@@ -215,6 +216,7 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
 
     return $output;
 }
+?>
 
 // 处理表单提交
 $filePath = isset($_POST['file']) ? $_POST['file'] : '';
