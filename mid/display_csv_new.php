@@ -28,6 +28,14 @@ function displayCsv($filePath, $highlightColumnIndex = null, $highlightFunction 
     // 将数据转换为 JSON 格式以便在 JavaScript 中处理
     $jsonData = json_encode($data);
 
+    // 如果提供了高亮函数，则将其转换为 JavaScript 可调用的形式
+    $highlightJsFunction = '';
+    if ($highlightFunction) {
+        $highlightJsFunction = 'function(cell) { return `' . $highlightFunction('${cell}') . '`; }';
+    } else {
+        $highlightJsFunction = 'function(cell) { return cell; }';
+    }
+
     // 输出 HTML 和 JavaScript
     $output = '<div>';
     
@@ -66,6 +74,7 @@ function displayCsv($filePath, $highlightColumnIndex = null, $highlightFunction 
         var currentPage = 1;
         var rowsPerPage = 10;
         var highlightColumnIndex = ' . ($highlightColumnIndex !== null ? (int)$highlightColumnIndex : 'null') . ';
+        var highlightFunction = ' . $highlightJsFunction . ';
 
         // 渲染表格数据
         function renderTable(page = 1) {
@@ -87,9 +96,9 @@ function displayCsv($filePath, $highlightColumnIndex = null, $highlightFunction 
                 var tr = document.createElement("tr");
                 row.forEach(function(cell, index) {
                     var td = document.createElement("td");
-                    // 如果当前列是指定的 highlightColumnIndex，则调用 PHP 的高亮函数
-                    if (index === highlightColumnIndex && typeof highlightCell === "function") {
-                        td.innerHTML = highlightCell(cell);
+                    // 如果当前列是指定的 highlightColumnIndex，则调用 highlightFunction 处理单元格
+                    if (index === highlightColumnIndex && typeof highlightFunction === "function") {
+                        td.innerHTML = highlightFunction(cell);
                     } else {
                         td.textContent = cell;
                     }
@@ -187,7 +196,7 @@ if (empty($filePath)) {
     echo '<button type="submit">显示数据</button>';
     echo '</form>';
 } else {
-    // 调用函数并输出结果
+    // 调用函数并输出结果，传入默认的高亮函数
     echo displayCsv($filePath, $highlightColumnIndex, 'highlightRed');
 }
 ?>
