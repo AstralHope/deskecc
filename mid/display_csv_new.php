@@ -22,8 +22,12 @@ function displayCsv($filePath) {
 
     // 输出 HTML 和 JavaScript
     $output = '<div>';
-    $output .= '<input type="text" id="searchInput" placeholder="搜索..." onkeyup="filterTable()">';
-
+    
+    // 显示 "共 x 项" 和搜索框
+    $output .= '共 <span id="totalItems">0</span> 项';
+    $output .= ' <input type="text" id="searchInput" placeholder="搜索..." onkeyup="filterTable()"> ';
+    $output .= '<button id="clearSearchBtn" onclick="clearSearch()">清除筛选</button>';
+    
     // 显示表格
     $output .= '<table border="1" id="csvTable">';
     $output .= '<thead><tr>';
@@ -32,19 +36,16 @@ function displayCsv($filePath) {
     }
     $output .= '</tr></thead><tbody id="tableBody"></tbody></table>';
 
-    // 显示总项数和每页行数选择
-    $output .= '<div style="margin-top: 10px;">';
-    $output .= '共 <span id="totalItems">0</span> 项';
-    $output .= ' 每页显示: <select id="rowsPerPage" onchange="changeRowsPerPage()">
+    // 下拉框和分页按钮放在同一行
+    $output .= '<div style="margin-top: 10px; display: flex; align-items: center;">';
+    $output .= '每页显示: <select id="rowsPerPage" onchange="changeRowsPerPage()" style="margin-right: 10px;">
                     <option value="10">10</option>
                     <option value="20">20</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
                 </select>';
+    $output .= '<div id="pagination"></div>';
     $output .= '</div>';
-
-    // 翻页控件
-    $output .= '<div id="pagination" style="margin-top: 10px;"></div>';
 
     // 数据总数和每页显示的数量
     $output .= '<script>
@@ -120,6 +121,14 @@ function displayCsv($filePath) {
             data = filteredData;
             currentPage = 1;
             renderTable(currentPage);
+        }
+
+        // 清除筛选
+        function clearSearch() {
+            document.getElementById("searchInput").value = "";  // 清空搜索框
+            data = ' . $jsonData . ';  // 恢复原始数据
+            currentPage = 1;  // 重置页码
+            renderTable(currentPage);  // 重新渲染表格
         }
 
         // 改变每页显示的行数
