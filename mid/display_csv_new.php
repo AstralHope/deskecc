@@ -1,5 +1,8 @@
 <?php
 function displayCsv($filePath) {
+    // 获取文件名（不包括扩展名）
+    $fileName = pathinfo($filePath, PATHINFO_FILENAME);
+
     // 检查文件是否存在
     if (!file_exists($filePath) || !is_readable($filePath)) {
         return '文件不存在或不可读取';
@@ -23,10 +26,13 @@ function displayCsv($filePath) {
     // 输出 HTML 和 JavaScript
     $output = '<div>';
     
-    // 显示 "共 x 项" 和搜索框
-    $output .= '共 <span id="totalItems">0</span> 项';
+    // 页面标题
+    $output .= '<h1>' . htmlspecialchars($fileName) . '</h1>';
+    
+    // 显示搜索框和筛选按钮
     $output .= ' <input type="text" id="searchInput" placeholder="搜索..." onkeydown="checkEnter(event)" style="margin-right: 10px;">';
     $output .= '<button id="searchBtn" onclick="filterTable()">筛选</button>';
+    $output .= ' 共 <span id="totalItems">0</span> 项';
     $output .= '<button id="clearSearchBtn" onclick="clearSearch()">清除筛选</button>';
     
     // 显示表格
