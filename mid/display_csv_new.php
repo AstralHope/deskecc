@@ -25,7 +25,8 @@ function displayCsv($filePath) {
     
     // 显示 "共 x 项" 和搜索框
     $output .= '共 <span id="totalItems">0</span> 项';
-    $output .= ' <input type="text" id="searchInput" placeholder="搜索..." onkeyup="filterTable()"> ';
+    $output .= ' <input type="text" id="searchInput" placeholder="搜索..." onkeydown="checkEnter(event)" style="margin-right: 10px;">';
+    $output .= '<button id="searchBtn" onclick="filterTable()">筛选</button>';
     $output .= '<button id="clearSearchBtn" onclick="clearSearch()">清除筛选</button>';
     
     // 显示表格
@@ -50,6 +51,7 @@ function displayCsv($filePath) {
     // 数据总数和每页显示的数量
     $output .= '<script>
         var data = ' . $jsonData . ';
+        var originalData = JSON.parse(JSON.stringify(data));  // 保持原始数据
         var currentPage = 1;
         var rowsPerPage = 10;
 
@@ -110,23 +112,35 @@ function displayCsv($filePath) {
         function filterTable() {
             var input = document.getElementById("searchInput");
             var filter = input.value.toLowerCase();
-            var filteredData = data.filter(function(row, index) {
-                if (index === 0) return true; // 保留表头
-                return row.some(function(cell) {
-                    return cell.toLowerCase().indexOf(filter) !== -1;
+            if (filter === "") {
+                // 如果没有输入内容，则恢复原始数据
+                data = JSON.parse(JSON.stringify(originalData));
+            } else {
+                // 根据搜索内容过滤数据
+                data = originalData.filter(function(row, index) {
+                    if (index === 0) return true; // 保留表头
+                    return row.some(function(cell) {
+                        return cell.toLowerCase().indexOf(filter) !== -1;
+                    });
                 });
-            });
+            }
 
             // 更新数据并渲染第一页
-            data = filteredData;
             currentPage = 1;
             renderTable(currentPage);
+        }
+
+        // 检查回车键是否按下
+        function checkEnter(event) {
+            if (event.key === "Enter") {
+                filterTable();  // 如果按下回车键，触发筛选
+            }
         }
 
         // 清除筛选
         function clearSearch() {
             document.getElementById("searchInput").value = "";  // 清空搜索框
-            data = ' . $jsonData . ';  // 恢复原始数据
+            data = JSON.parse(JSON.stringify(originalData));  // 恢复原始数据
             currentPage = 1;  // 重置页码
             renderTable(currentPage);  // 重新渲染表格
         }
