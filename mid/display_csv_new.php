@@ -1,11 +1,8 @@
 <?php
-// 默认的高亮函数，将文本变为红色
-function highlightRed($text) {
-    return '<span style="color: red;">' . htmlspecialchars($text) . '</span>';
-}
+// 定义基础路径常量
+define('BASEPATH', '/path/to/csv/files/');
 
 function makeLink($text) {
-    // 生成 HTML 超链接标签，指向 `display_csv_new.php`，并通过 POST 方式传递参数
     $url = 'display_csv_new.php';
     return '<form method="POST" action="' . htmlspecialchars($url) . '" style="display: inline;">
                 <input type="hidden" name="file" value="' . htmlspecialchars($text) . '">
@@ -15,18 +12,21 @@ function makeLink($text) {
             </form>';
 }
 
-function displayCsv($filePath, $highlightColumnIndex = null, $highlightFunction = null) {
+function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) {
+    // 拼接基础路径和文件路径
+    $fullFilePath = BASEPATH . $filePath;
+    
     // 获取文件名（不包括扩展名）
     $fileName = pathinfo($filePath, PATHINFO_FILENAME);
 
     // 检查文件是否存在
-    if (!file_exists($filePath) || !is_readable($filePath)) {
+    if (!file_exists($fullFilePath) || !is_readable($fullFilePath)) {
         return '文件不存在或不可读取';
     }
 
     $data = [];
     // 打开 CSV 文件
-    if (($handle = fopen($filePath, 'r')) !== false) {
+    if (($handle = fopen($fullFilePath, 'r')) !== false) {
         // 读取所有数据
         while (($row = fgetcsv($handle, 1000, ',')) !== false) {
             $data[] = $row;
@@ -39,12 +39,12 @@ function displayCsv($filePath, $highlightColumnIndex = null, $highlightFunction 
     // 将数据转换为 JSON 格式以便在 JavaScript 中处理
     $jsonData = json_encode($data);
 
-    // 如果提供了高亮函数，则将其转换为 JavaScript 可调用的形式
-    $highlightJsFunction = '';
-    if ($highlightFunction) {
-        $highlightJsFunction = 'function(cell) { return `' . $highlightFunction('${cell}') . '`; }';
+    // 如果提供了额外处理函数，则将其转换为 JavaScript 可调用的形式
+    $extraJsFunction = '';
+    if ($extraFunction) {
+        $extraJsFunction = 'function(cell) { return `' . $extraFunction('${cell}') . '`; }';
     } else {
-        $highlightJsFunction = 'function(cell) { return cell; }';
+        $extraJsFunction = 'function(cell) { return cell; }';
     }
 
     // 输出 HTML 和 JavaScript
@@ -84,8 +84,8 @@ function displayCsv($filePath, $highlightColumnIndex = null, $highlightFunction 
         var originalData = JSON.parse(JSON.stringify(data));  // 保持原始数据
         var currentPage = 1;
         var rowsPerPage = 10;
-        var highlightColumnIndex = ' . ($highlightColumnIndex !== null ? (int)$highlightColumnIndex : 'null') . ';
-        var highlightFunction = ' . $highlightJsFunction . ';
+        var extraColumnIndex = ' . ($extraColumnIndex !== null ? (int)$extraColumnIndex : 'null') . ';
+        var extraFunction = ' . $extraJsFunction . ';
 
         // 渲染表格数据
         function renderTable(page = 1) {
@@ -107,9 +107,9 @@ function displayCsv($filePath, $highlightColumnIndex = null, $highlightFunction 
                 var tr = document.createElement("tr");
                 row.forEach(function(cell, index) {
                     var td = document.createElement("td");
-                    // 如果当前列是指定的 highlightColumnIndex，则调用 highlightFunction 处理单元格
-                    if (index === highlightColumnIndex && typeof highlightFunction === "function") {
-                        td.innerHTML = highlightFunction(cell);
+                    // 如果当前列是指定的 extraColumnIndex，则调用 extraFunction 处理单元格
+                    if (index === extraColumnIndex && typeof extraFunction === "function") {
+                        td.innerHTML = extraFunction(cell);
                     } else {
                         td.textContent = cell;
                     }
@@ -197,17 +197,17 @@ function displayCsv($filePath, $highlightColumnIndex = null, $highlightFunction 
 
 // 获取 POST 参数
 $filePath = isset($_POST['file']) ? $_POST['file'] : '';
-$highlightColumnIndex = isset($_POST['columnIndex']) ? intval($_POST['columnIndex']) : null;
+$extraColumnIndex = isset($_POST['columnIndex']) ? intval($_POST['columnIndex']) : null;
 
 // 显示文件路径输入表单
 if (empty($filePath)) {
     echo '<form method="POST">';
     echo 'CSV 文件路径: <input type="text" name="file" required>';
-    echo ' 高亮列 (从0开始): <input type="number" name="columnIndex" min="0">';
+    echo ' 额外处理列 (从0开始): <input type="number" name="columnIndex" min="0">';
     echo '<button type="submit">显示数据</button>';
     echo '</form>';
 } else {
-    // 调用函数并输出结果，传入默认的高亮函数
-    echo displayCsv($filePath, $highlightColumnIndex, 'makeLink');
+    // 调用函数并输出结果，传入 makeLink 作为额外处理函数
+    echo displayCsv($filePath, $extraColumnIndex, 'makeLink');
 }
 ?>
