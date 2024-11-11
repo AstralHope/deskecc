@@ -46,6 +46,7 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) 
     // 输出 HTML 和 JavaScript，包含搜索和分页功能
     $output = '<div>';
     $output .= '<h1>' . htmlspecialchars($fileName) . '</h1>';
+    $output .= '<h1>' . htmlspecialchars($$fullFilePath) . '</h1>';
     $output .= '<input type="text" id="searchInput" placeholder="搜索..." onkeydown="checkEnter(event)" style="margin-right: 10px;">';
     $output .= '<button id="searchBtn" onclick="filterTable()">筛选</button>';
     $output .= '<button id="clearSearchBtn" onclick="clearSearch()">清除筛选</button>';
