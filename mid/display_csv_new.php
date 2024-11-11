@@ -200,15 +200,15 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
 // 处理表单提交
 $filePath = isset($_POST['file']) ? $_POST['file'] : '';
 $extraColumnIndex = isset($_POST['columnIndex']) ? intval($_POST['columnIndex']) : null;
-$extraFunction = isset($_POST['function']) ? $_POST['file'] : null;
-$hiddenColumns = isset($_POST['hiddenClumnIndex']) ? $_POST['file'] : '';
+$extraFunction = isset($_POST['function']) ? $_POST['function'] : null;
+$hiddenColumns = isset($_POST['hiddenClumnIndex']) ? $_POST['hiddenClumnIndex'] : '';
 
 if (empty($filePath)) {
     echo '<form method="POST">';
     echo 'CSV 文件路径: <input type="text" name="file" required>';
     echo ' 额外处理列 (从0开始): <input type="number" name="columnIndex" min="0">';
-    echo 'CSV 文件路径: <input type="text" name="function" value="makeLink">';
-    echo 'CSV 文件路径: <input type="text" name="hiddenClumnIndex">';
+    echo '函数: <input type="text" name="function" value="makeLink">';
+    echo '隐藏列: <input type="text" name="hiddenClumnIndex">';
     echo '<button type="submit">显示数据</button>';
     echo '</form>';
 } else {
