@@ -87,9 +87,9 @@ function displayCsv($filePath, $highlightColumnIndex = null, $highlightFunction 
                 var tr = document.createElement("tr");
                 row.forEach(function(cell, index) {
                     var td = document.createElement("td");
-                    // 如果当前列是指定的 highlightColumnIndex，并且 highlightFunction 存在，则调用高亮函数
-                    if (index === highlightColumnIndex && typeof highlightFunction === "function") {
-                        td.innerHTML = highlightFunction(cell);
+                    // 如果当前列是指定的 highlightColumnIndex，则调用 PHP 的高亮函数
+                    if (index === highlightColumnIndex && typeof highlightCell === "function") {
+                        td.innerHTML = highlightCell(cell);
                     } else {
                         td.textContent = cell;
                     }
@@ -187,7 +187,7 @@ if (empty($filePath)) {
     echo '<button type="submit">显示数据</button>';
     echo '</form>';
 } else {
-    // 调用函数并输出结果，传入默认的高亮函数
-    echo displayCsv($filePath, $highlightColumnIndex, $highlightColumnIndex !== null ? 'highlightRed' : null);
+    // 调用函数并输出结果
+    echo displayCsv($filePath, $highlightColumnIndex, 'highlightRed');
 }
 ?>
