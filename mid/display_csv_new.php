@@ -30,9 +30,8 @@ function displayCsv($filePath) {
     $output .= '<h1>' . htmlspecialchars($fileName) . '</h1>';
     
     // 显示搜索框和筛选按钮
-    $output .= ' <input type="text" id="searchInput" placeholder="搜索..." onkeydown="checkEnter(event)" style="margin-right: 10px;">';
+    $output .= '<input type="text" id="searchInput" placeholder="搜索..." onkeydown="checkEnter(event)" style="margin-right: 10px;">';
     $output .= '<button id="searchBtn" onclick="filterTable()">筛选</button>';
-    $output .= ' 共 <span id="totalItems">0</span> 项';
     $output .= '<button id="clearSearchBtn" onclick="clearSearch()">清除筛选</button>';
     
     // 显示表格
@@ -43,8 +42,9 @@ function displayCsv($filePath) {
     }
     $output .= '</tr></thead><tbody id="tableBody"></tbody></table>';
 
-    // 下拉框和分页按钮放在同一行
+    // 下拉框和分页按钮放在同一行，并将“共 x 项”放在下拉框前面
     $output .= '<div style="margin-top: 10px; display: flex; align-items: center;">';
+    $output .= '共 <span id="totalItems">0</span> 项 ';
     $output .= '每页显示: <select id="rowsPerPage" onchange="changeRowsPerPage()" style="margin-right: 10px;">
                     <option value="10">10</option>
                     <option value="20">20</option>
