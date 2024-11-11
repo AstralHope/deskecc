@@ -215,7 +215,6 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
 
     return $output;
 }
-?>
 
 // 处理表单提交
 $filePath = isset($_POST['file']) ? $_POST['file'] : '';
