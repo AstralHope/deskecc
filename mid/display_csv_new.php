@@ -18,9 +18,9 @@ function displayCsv($filePath, $page = 1, $rowsPerPage = 10) {
     }
 
     // 计算总行数和总页数
-    $totalRows = count($data);
-    $totalPages = ceil(($totalRows - 1) / $rowsPerPage); // 扣除表头行
-    $offset = ($page - 1) * $rowsPerPage + 1; // 从第二行开始读取数据
+    $totalRows = count($data) - 1; // 扣除表头行
+    $totalPages = ceil($totalRows / $rowsPerPage); 
+    $offset = ($page - 1) * $rowsPerPage + 1; // 从数据部分的第二行开始读取
 
     // 列出表头
     $output = '<table border="1">';
@@ -31,7 +31,7 @@ function displayCsv($filePath, $page = 1, $rowsPerPage = 10) {
     $output .= '</tr>';
 
     // 列出当前页的数据
-    for ($i = $offset; $i < $offset + $rowsPerPage && $i < $totalRows; $i++) {
+    for ($i = $offset; $i < $offset + $rowsPerPage && $i < $totalRows + 1; $i++) {
         $output .= '<tr>';
         foreach ($data[$i] as $cell) {
             $output .= '<td>' . htmlspecialchars($cell) . '</td>';
@@ -40,8 +40,11 @@ function displayCsv($filePath, $page = 1, $rowsPerPage = 10) {
     }
     $output .= '</table>';
 
+    // 下拉菜单和分页导航
+    $output .= '<div style="display: flex; align-items: center; margin-top: 10px;">';
+    
     // 下拉菜单用于选择每页显示的行数
-    $output .= '<form method="GET" style="margin-top:10px;">';
+    $output .= '<form method="GET" style="display: inline-block; margin-right: 10px;">';
     $output .= '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
     $output .= '<input type="hidden" name="page" value="1">'; // 切换行数时从第一页开始
     $output .= '每页显示: <select name="rowsPerPage" onchange="this.form.submit()">';
@@ -52,15 +55,18 @@ function displayCsv($filePath, $page = 1, $rowsPerPage = 10) {
     }
     $output .= '</select> 条</form>';
 
-    // 添加翻页链接
-    $output .= '<div style="margin-top:10px;">';
+    // 显示总页数和总项数
+    $output .= '<span>共 ' . $totalPages . ' 页 / ' . $totalRows . ' 项</span>';
+
+    // 翻页链接
+    $output .= '<div style="margin-left: auto;">';
     if ($page > 1) {
         $output .= '<a href="?file=' . urlencode($filePath) . '&page=' . ($page - 1) . '&rowsPerPage=' . $rowsPerPage . '">上一页</a> ';
     }
     if ($page < $totalPages) {
         $output .= '<a href="?file=' . urlencode($filePath) . '&page=' . ($page + 1) . '&rowsPerPage=' . $rowsPerPage . '">下一页</a>';
     }
-    $output .= '</div>';
+    $output .= '</div></div>';
 
     return $output;
 }
@@ -73,4 +79,3 @@ $rowsPerPage = isset($_GET['rowsPerPage']) ? (int)$_GET['rowsPerPage'] : 10;
 // 调用函数并输出结果
 echo displayCsv($filePath, $page, $rowsPerPage);
 ?>
-
