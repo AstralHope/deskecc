@@ -47,7 +47,7 @@ function displayCsv($filePath, $page = 1, $rowsPerPage = 10) {
     $output .= '<div style="display: flex; align-items: center; margin-top: 10px;">';
 
     // 下拉菜单用于选择每页显示的行数
-    $output .= '<form method="GET" style="display: inline-block; margin-right: 10px;">';
+    $output .= '<form method="POST" style="display: inline-block; margin-right: 10px;">';
     $output .= '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
     $output .= '<input type="hidden" name="page" value="1">'; // 切换行数时从第一页开始
     $output .= '每页显示: <select name="rowsPerPage" onchange="this.form.submit()">';
@@ -63,10 +63,18 @@ function displayCsv($filePath, $page = 1, $rowsPerPage = 10) {
 
     // 翻页链接紧跟在页数信息后
     if ($page > 1) {
-        $output .= ' <a href="?file=' . urlencode($filePath) . '&page=' . ($page - 1) . '&rowsPerPage=' . $rowsPerPage . '">上一页</a>';
+        $output .= ' <form method="POST" style="display: inline;">';
+        $output .= '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
+        $output .= '<input type="hidden" name="page" value="' . ($page - 1) . '">';
+        $output .= '<input type="hidden" name="rowsPerPage" value="' . $rowsPerPage . '">';
+        $output .= '<button type="submit">上一页</button></form>';
     }
     if ($page < $totalPages) {
-        $output .= ' <a href="?file=' . urlencode($filePath) . '&page=' . ($page + 1) . '&rowsPerPage=' . $rowsPerPage . '">下一页</a>';
+        $output .= ' <form method="POST" style="display: inline;">';
+        $output .= '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
+        $output .= '<input type="hidden" name="page" value="' . ($page + 1) . '">';
+        $output .= '<input type="hidden" name="rowsPerPage" value="' . $rowsPerPage . '">';
+        $output .= '<button type="submit">下一页</button></form>';
     }
 
     $output .= '</div>';
@@ -74,11 +82,19 @@ function displayCsv($filePath, $page = 1, $rowsPerPage = 10) {
     return $output;
 }
 
-// 获取 URL 参数
-$filePath = isset($_GET['file']) ? $_GET['file'] : '';
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$rowsPerPage = isset($_GET['rowsPerPage']) ? (int)$_GET['rowsPerPage'] : 10;
+// 获取 POST 参数
+$filePath = isset($_POST['file']) ? $_POST['file'] : '';
+$page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
+$rowsPerPage = isset($_POST['rowsPerPage']) ? (int)$_POST['rowsPerPage'] : 10;
 
-// 调用函数并输出结果
-echo displayCsv($filePath, $page, $rowsPerPage);
+// 显示文件路径输入表单
+if (empty($filePath)) {
+    echo '<form method="POST">';
+    echo 'CSV 文件路径: <input type="text" name="file" required>';
+    echo '<button type="submit">显示数据</button>';
+    echo '</form>';
+} else {
+    // 调用函数并输出结果
+    echo displayCsv($filePath, $page, $rowsPerPage);
+}
 ?>
