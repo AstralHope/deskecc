@@ -22,8 +22,11 @@ function displayCsv($filePath, $page = 1, $rowsPerPage = 10) {
     $totalPages = ceil($totalRows / $rowsPerPage); 
     $offset = ($page - 1) * $rowsPerPage + 1; // 从数据部分的第二行开始读取
 
+    // 显示总项数在页面顶部
+    $output = '<div style="margin-bottom: 10px;">共 ' . $totalRows . ' 项</div>';
+
     // 列出表头
-    $output = '<table border="1">';
+    $output .= '<table border="1">';
     $output .= '<tr>';
     foreach ($data[0] as $header) {
         $output .= '<th>' . htmlspecialchars($header) . '</th>';
@@ -40,9 +43,9 @@ function displayCsv($filePath, $page = 1, $rowsPerPage = 10) {
     }
     $output .= '</table>';
 
-    // 下拉菜单和分页导航
+    // 下拉菜单和分页导航在同一行
     $output .= '<div style="display: flex; align-items: center; margin-top: 10px;">';
-    
+
     // 下拉菜单用于选择每页显示的行数
     $output .= '<form method="GET" style="display: inline-block; margin-right: 10px;">';
     $output .= '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
@@ -55,18 +58,18 @@ function displayCsv($filePath, $page = 1, $rowsPerPage = 10) {
     }
     $output .= '</select> 条</form>';
 
-    // 显示总页数和总项数
-    $output .= '<span>共 ' . $totalPages . ' 页 / ' . $totalRows . ' 项</span>';
+    // 显示当前页和总页数
+    $output .= '<span>第 ' . $page . ' 页 / 共 ' . $totalPages . ' 页</span>';
 
-    // 翻页链接
-    $output .= '<div style="margin-left: auto;">';
+    // 翻页链接紧跟在页数信息后
     if ($page > 1) {
-        $output .= '<a href="?file=' . urlencode($filePath) . '&page=' . ($page - 1) . '&rowsPerPage=' . $rowsPerPage . '">上一页</a> ';
+        $output .= ' <a href="?file=' . urlencode($filePath) . '&page=' . ($page - 1) . '&rowsPerPage=' . $rowsPerPage . '">上一页</a>';
     }
     if ($page < $totalPages) {
-        $output .= '<a href="?file=' . urlencode($filePath) . '&page=' . ($page + 1) . '&rowsPerPage=' . $rowsPerPage . '">下一页</a>';
+        $output .= ' <a href="?file=' . urlencode($filePath) . '&page=' . ($page + 1) . '&rowsPerPage=' . $rowsPerPage . '">下一页</a>';
     }
-    $output .= '</div></div>';
+
+    $output .= '</div>';
 
     return $output;
 }
