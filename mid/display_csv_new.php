@@ -1,9 +1,16 @@
 <?php
 function makeLink($text) {
+    // 定义基础路径常量
+    $BASEPATH = '/data/deskecc/ack/clusterinfo/';
+    
+    // 拼接文件路径
+    $filePath = $BASEPATH . $text;
+    
+    // 生成超链接
     $url = 'display_csv_new.php';
-    return '<form method="POST" action="' . htmlspecialchars($url) . '" style="display: inline;">
-                <input type="hidden" name="file" value="' . htmlspecialchars($text) . '">
-                <button type="submit" style="color: blue; text-decoration: underline; background: none; border: none; padding: 0; cursor: pointer;">
+    return '<form method="POST" action="' . htmlspecialchars($url) . '" style="display: inline; white-space: nowrap;">
+                <input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">
+                <button type="submit" style="color: blue; text-decoration: underline; background: none; border: none; padding: 0; cursor: pointer; white-space: nowrap;">
                     ' . htmlspecialchars($text) . '
                 </button>
             </form>';
@@ -99,6 +106,10 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) 
                 tableBody.appendChild(tr);
             }
         }
+
+        // 确保表格自动调整列宽以适应内容
+        var table = document.getElementById("csvTable");
+        table.style.tableLayout = "auto"; // 使用自动布局以允许自适应宽度
 
         // 更新分页按钮
         function updatePagination(page) {
