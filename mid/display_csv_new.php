@@ -24,7 +24,7 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) 
     $fileName = pathinfo($filePath, PATHINFO_FILENAME);
 
     if (!file_exists($fullFilePath) || !is_readable($fullFilePath)) {
-        return '文件不存在或不可读取';
+        return $fullFilePath.'文件不存在或不可读取';
     }
 
     $data = [];
