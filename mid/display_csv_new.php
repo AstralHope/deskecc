@@ -23,7 +23,7 @@ function makeLinkforNode($text) {
     // 使用 urlencode 函数对文本进行编码，以确保 URL 安全
     $encodedText = urlencode($text. '.txt');
     // 返回超链接
-    return '<a href="view_txt.php?file=' . $encodedText . '">' . htmlspecialchars($text) . '</a>';
+    return '<a href="view_txt.php?file=' . text . ' ".txt">' . htmlspecialchars($text) . '</a>';
 }
 
 function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, $hiddenColumns = '') {
@@ -240,7 +240,7 @@ $hiddenColumns = isset($_POST['hiddenClumnIndex']) ? $_POST['hiddenClumnIndex'] 
 
 if (empty($filePath)) {
     echo '<form method="POST">';
-    echo 'CSV 文件路径: <input type="text" name="file" required>';
+    echo 'CSV 文件路径: <input type="text" value="/data/deskecc/ack/index/All_cluster_info.csv" name="file" required>';
     echo ' 额外处理列 (从0开始): <input type="number" name="columnIndex" min="0">';
     echo '函数: <input type="text" name="function" value="makeLinkforCluster">';
     echo '隐藏列: <input type="text" name="hiddenClumnIndex">';
