@@ -18,7 +18,7 @@ function makeLink($text) {
 
 function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) {
     // 定义基础路径常量
-    $BASEPATH = '/data/deskecc/ack/index/';
+    $BASEPATH = '';
     $fullFilePath = $BASEPATH . $filePath;
     
     $fileName = pathinfo($filePath, PATHINFO_FILENAME);
