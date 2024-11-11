@@ -1,7 +1,4 @@
 <?php
-// 定义基础路径常量
-define('BASEPATH', '/data/deskecc/ack/index/');
-
 function makeLink($text) {
     $url = 'display_csv_new.php';
     return '<form method="POST" action="' . htmlspecialchars($url) . '" style="display: inline;">
@@ -13,21 +10,18 @@ function makeLink($text) {
 }
 
 function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) {
-    // 拼接基础路径和文件路径
-    $fullFilePath = BASEPATH . $filePath;
+    // 定义基础路径常量
+    $BASEPATH = '/data/deskecc/ack/index/';
+    $fullFilePath = $BASEPATH . $filePath;
     
-    // 获取文件名（不包括扩展名）
     $fileName = pathinfo($filePath, PATHINFO_FILENAME);
 
-    // 检查文件是否存在
     if (!file_exists($fullFilePath) || !is_readable($fullFilePath)) {
         return '文件不存在或不可读取';
     }
 
     $data = [];
-    // 打开 CSV 文件
     if (($handle = fopen($fullFilePath, 'r')) !== false) {
-        // 读取所有数据
         while (($row = fgetcsv($handle, 1000, ',')) !== false) {
             $data[] = $row;
         }
@@ -38,35 +32,23 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) 
 
     // 将数据转换为 JSON 格式以便在 JavaScript 中处理
     $jsonData = json_encode($data);
+    $extraJsFunction = $extraFunction 
+        ? 'function(cell) { return `' . $extraFunction('${cell}') . '`; }'
+        : 'function(cell) { return cell; }';
 
-    // 如果提供了额外处理函数，则将其转换为 JavaScript 可调用的形式
-    $extraJsFunction = '';
-    if ($extraFunction) {
-        $extraJsFunction = 'function(cell) { return `' . $extraFunction('${cell}') . '`; }';
-    } else {
-        $extraJsFunction = 'function(cell) { return cell; }';
-    }
-
-    // 输出 HTML 和 JavaScript
+    // 输出 HTML 和 JavaScript，包含搜索和分页功能
     $output = '<div>';
-    
-    // 页面标题
     $output .= '<h1>' . htmlspecialchars($fileName) . '</h1>';
-    
-    // 显示搜索框和筛选按钮
     $output .= '<input type="text" id="searchInput" placeholder="搜索..." onkeydown="checkEnter(event)" style="margin-right: 10px;">';
     $output .= '<button id="searchBtn" onclick="filterTable()">筛选</button>';
     $output .= '<button id="clearSearchBtn" onclick="clearSearch()">清除筛选</button>';
-    
-    // 显示表格
-    $output .= '<table border="1" id="csvTable">';
-    $output .= '<thead><tr>';
+
+    $output .= '<table border="1" id="csvTable"><thead><tr>';
     foreach ($data[0] as $header) {
         $output .= '<th>' . htmlspecialchars($header) . '</th>';
     }
     $output .= '</tr></thead><tbody id="tableBody"></tbody></table>';
 
-    // 下拉框和分页按钮放在同一行，并将“共 x 项”放在下拉框前面
     $output .= '<div style="margin-top: 10px; display: flex; align-items: center;">';
     $output .= '共 <span id="totalItems">0</span> 项 ';
     $output .= '每页显示: <select id="rowsPerPage" onchange="changeRowsPerPage()" style="margin-right: 10px;">
@@ -78,15 +60,14 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) 
     $output .= '<div id="pagination"></div>';
     $output .= '</div>';
 
-    // 数据总数和每页显示的数量
     $output .= '<script>
         var data = ' . $jsonData . ';
-        var originalData = JSON.parse(JSON.stringify(data));  // 保持原始数据
+        var originalData = JSON.parse(JSON.stringify(data));
         var currentPage = 1;
         var rowsPerPage = 10;
         var extraColumnIndex = ' . ($extraColumnIndex !== null ? (int)$extraColumnIndex : 'null') . ';
         var extraFunction = ' . $extraJsFunction . ';
-
+        
         // 渲染表格数据
         function renderTable(page = 1) {
             var start = (page - 1) * rowsPerPage + 1;
@@ -195,11 +176,10 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) 
     return $output;
 }
 
-// 获取 POST 参数
+// 处理表单提交
 $filePath = isset($_POST['file']) ? $_POST['file'] : '';
 $extraColumnIndex = isset($_POST['columnIndex']) ? intval($_POST['columnIndex']) : null;
 
-// 显示文件路径输入表单
 if (empty($filePath)) {
     echo '<form method="POST">';
     echo 'CSV 文件路径: <input type="text" name="file" required>';
@@ -207,7 +187,6 @@ if (empty($filePath)) {
     echo '<button type="submit">显示数据</button>';
     echo '</form>';
 } else {
-    // 调用函数并输出结果，传入 makeLink 作为额外处理函数
     echo displayCsv($filePath, $extraColumnIndex, 'makeLink');
 }
 ?>
