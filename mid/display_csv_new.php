@@ -151,7 +151,10 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
         // 排序表格
         function sortTable(columnIndex) {
             var isNumeric = !isNaN(data[1][columnIndex]); // 判断该列是否为数字类型
-            data.sort(function(a, b) {
+            // 排除表头行，即从 data[1] 开始进行排序
+            var rows = data.slice(1); // 排除表头
+
+            rows.sort(function(a, b) {
                 var cellA = a[columnIndex];
                 var cellB = b[columnIndex];
                 if (isNumeric) {
@@ -162,6 +165,9 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
                         : cellB.localeCompare(cellA); // 字符串排序
                 }
             });
+
+            // 重新组合表格数据
+            data = [data[0]].concat(rows); // 将表头加回排序后的数据
             sortAscending = !sortAscending; // 切换排序顺序
             renderTable(currentPage); // 重新渲染表格
         }
