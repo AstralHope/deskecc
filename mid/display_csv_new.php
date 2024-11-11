@@ -4,6 +4,17 @@ function highlightRed($text) {
     return '<span style="color: red;">' . htmlspecialchars($text) . '</span>';
 }
 
+function makeLink($text) {
+    // 生成 HTML 超链接标签，指向 `display_csv_new.php`，并通过 POST 方式传递参数
+    $url = 'display_csv_new.php';
+    return '<form method="POST" action="' . htmlspecialchars($url) . '" style="display: inline;">
+                <input type="hidden" name="file" value="' . htmlspecialchars($text) . '">
+                <button type="submit" style="color: blue; text-decoration: underline; background: none; border: none; padding: 0; cursor: pointer;">
+                    ' . htmlspecialchars($text) . '
+                </button>
+            </form>';
+}
+
 function displayCsv($filePath, $highlightColumnIndex = null, $highlightFunction = null) {
     // 获取文件名（不包括扩展名）
     $fileName = pathinfo($filePath, PATHINFO_FILENAME);
@@ -197,6 +208,6 @@ if (empty($filePath)) {
     echo '</form>';
 } else {
     // 调用函数并输出结果，传入默认的高亮函数
-    echo displayCsv($filePath, $highlightColumnIndex, 'highlightRed');
+    echo displayCsv($filePath, $highlightColumnIndex, 'makeLink');
 }
 ?>
