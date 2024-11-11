@@ -1,5 +1,10 @@
 <?php
-function displayCsv($filePath) {
+// 默认的高亮函数，将文本变为红色
+function highlightRed($text) {
+    return '<span style="color: red;">' . htmlspecialchars($text) . '</span>';
+}
+
+function displayCsv($filePath, $highlightColumnIndex = null, $highlightFunction = null) {
     // 获取文件名（不包括扩展名）
     $fileName = pathinfo($filePath, PATHINFO_FILENAME);
 
@@ -60,6 +65,7 @@ function displayCsv($filePath) {
         var originalData = JSON.parse(JSON.stringify(data));  // 保持原始数据
         var currentPage = 1;
         var rowsPerPage = 10;
+        var highlightColumnIndex = ' . ($highlightColumnIndex !== null ? (int)$highlightColumnIndex : 'null') . ';
 
         // 渲染表格数据
         function renderTable(page = 1) {
@@ -79,9 +85,14 @@ function displayCsv($filePath) {
             for (var i = start; i <= end; i++) {
                 var row = data[i];
                 var tr = document.createElement("tr");
-                row.forEach(function(cell) {
+                row.forEach(function(cell, index) {
                     var td = document.createElement("td");
-                    td.textContent = cell;
+                    // 如果当前列是指定的 highlightColumnIndex，并且 highlightFunction 存在，则调用高亮函数
+                    if (index === highlightColumnIndex && typeof highlightFunction === "function") {
+                        td.innerHTML = highlightFunction(cell);
+                    } else {
+                        td.textContent = cell;
+                    }
                     tr.appendChild(td);
                 });
                 tableBody.appendChild(tr);
@@ -166,15 +177,17 @@ function displayCsv($filePath) {
 
 // 获取 POST 参数
 $filePath = isset($_POST['file']) ? $_POST['file'] : '';
+$highlightColumnIndex = isset($_POST['columnIndex']) ? intval($_POST['columnIndex']) : null;
 
 // 显示文件路径输入表单
 if (empty($filePath)) {
     echo '<form method="POST">';
     echo 'CSV 文件路径: <input type="text" name="file" required>';
+    echo ' 高亮列 (从0开始): <input type="number" name="columnIndex" min="0">';
     echo '<button type="submit">显示数据</button>';
     echo '</form>';
 } else {
-    // 调用函数并输出结果
-    echo displayCsv($filePath);
+    // 调用函数并输出结果，传入默认的高亮函数
+    echo displayCsv($filePath, $highlightColumnIndex, $highlightColumnIndex !== null ? 'highlightRed' : null);
 }
 ?>
