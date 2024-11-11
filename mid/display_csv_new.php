@@ -1,5 +1,5 @@
 <?php
-function displayCsv($filePath, $page = 1, $rowsPerPage = 10, $search = '') {
+function displayCsv($filePath) {
     // 检查文件是否存在
     if (!file_exists($filePath) || !is_readable($filePath)) {
         return '文件不存在或不可读取';
@@ -10,95 +10,62 @@ function displayCsv($filePath, $page = 1, $rowsPerPage = 10, $search = '') {
     if (($handle = fopen($filePath, 'r')) !== false) {
         // 读取所有数据
         while (($row = fgetcsv($handle, 1000, ',')) !== false) {
-            // 若有搜索关键字，过滤包含搜索字符串的行
-            if (empty($search) || stripos(implode(' ', $row), $search) !== false) {
-                $data[] = $row;
-            }
+            $data[] = $row;
         }
         fclose($handle);
     } else {
         return '无法打开文件';
     }
 
-    // 计算总行数和总页数
-    $totalRows = count($data) - 1; // 扣除表头行
-    $totalPages = ceil($totalRows / $rowsPerPage); 
-    $offset = ($page - 1) * $rowsPerPage + 1; // 从数据部分的第二行开始读取
+    // 将数据转换为 JSON 格式以便在 JavaScript 中处理
+    $jsonData = json_encode($data);
 
-    // 搜索框和总项数在页面顶部
-    $output = '<form method="POST" style="display: inline;">';
-    $output .= '搜索: <input type="text" name="search" value="' . htmlspecialchars($search) . '">';
-    $output .= '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
-    $output .= '<input type="hidden" name="page" value="1">';
-    $output .= '<input type="hidden" name="rowsPerPage" value="' . $rowsPerPage . '">';
-    $output .= '<button type="submit">筛选</button></form>';
-    $output .= '<div style="margin-top: 10px;">共 ' . $totalRows . ' 项</div>';
+    // 输出 HTML 和 JavaScript
+    $output = '<div>';
+    $output .= '<input type="text" id="searchInput" placeholder="搜索..." onkeyup="filterTable()">';
 
-    // 列出表头
-    $output .= '<table border="1">';
-    $output .= '<tr>';
+    // 显示表格
+    $output .= '<table border="1" id="csvTable">';
+    $output .= '<thead><tr>';
     foreach ($data[0] as $header) {
         $output .= '<th>' . htmlspecialchars($header) . '</th>';
     }
-    $output .= '</tr>';
+    $output .= '</tr></thead><tbody>';
 
-    // 列出当前页的数据
-    for ($i = $offset; $i < $offset + $rowsPerPage && $i < $totalRows + 1; $i++) {
+    // 输出所有行数据
+    for ($i = 1; $i < count($data); $i++) {
         $output .= '<tr>';
         foreach ($data[$i] as $cell) {
             $output .= '<td>' . htmlspecialchars($cell) . '</td>';
         }
         $output .= '</tr>';
     }
-    $output .= '</table>';
 
-    // 下拉菜单和分页导航在同一行
-    $output .= '<div style="display: flex; align-items: center; margin-top: 10px;">';
-
-    // 下拉菜单用于选择每页显示的行数
-    $output .= '<form method="POST" style="display: inline-block; margin-right: 10px;">';
-    $output .= '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
-    $output .= '<input type="hidden" name="search" value="' . htmlspecialchars($search) . '">';
-    $output .= '<input type="hidden" name="page" value="1">'; // 切换行数时从第一页开始
-    $output .= '每页显示: <select name="rowsPerPage" onchange="this.form.submit()">';
-    $rowsOptions = [10, 20, 50, 100];
-    foreach ($rowsOptions as $option) {
-        $selected = ($option == $rowsPerPage) ? 'selected' : '';
-        $output .= '<option value="' . $option . '" ' . $selected . '>' . $option . '</option>';
-    }
-    $output .= '</select> 条</form>';
-
-    // 显示当前页和总页数
-    $output .= '<span>第 ' . $page . ' 页 / 共 ' . $totalPages . ' 页</span>';
-
-    // 翻页链接紧跟在页数信息后
-    if ($page > 1) {
-        $output .= ' <form method="POST" style="display: inline;">';
-        $output .= '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
-        $output .= '<input type="hidden" name="search" value="' . htmlspecialchars($search) . '">';
-        $output .= '<input type="hidden" name="page" value="' . ($page - 1) . '">';
-        $output .= '<input type="hidden" name="rowsPerPage" value="' . $rowsPerPage . '">';
-        $output .= '<button type="submit">上一页</button></form>';
-    }
-    if ($page < $totalPages) {
-        $output .= ' <form method="POST" style="display: inline;">';
-        $output .= '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
-        $output .= '<input type="hidden" name="search" value="' . htmlspecialchars($search) . '">';
-        $output .= '<input type="hidden" name="page" value="' . ($page + 1) . '">';
-        $output .= '<input type="hidden" name="rowsPerPage" value="' . $rowsPerPage . '">';
-        $output .= '<button type="submit">下一页</button></form>';
-    }
-
+    $output .= '</tbody></table>';
     $output .= '</div>';
+
+    // JavaScript 代码，用于在客户端实现搜索过滤功能
+    $output .= '<script>
+        function filterTable() {
+            var input = document.getElementById("searchInput");
+            var filter = input.value.toLowerCase();
+            var table = document.getElementById("csvTable");
+            var tr = table.getElementsByTagName("tr");
+
+            // 循环表格中的每一行，检查是否匹配搜索内容
+            for (var i = 1; i < tr.length; i++) {
+                var row = tr[i];
+                var txtValue = row.textContent || row.innerText;
+                row.style.display = txtValue.toLowerCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+    </script>';
 
     return $output;
 }
 
 // 获取 POST 参数
 $filePath = isset($_POST['file']) ? $_POST['file'] : '';
-$page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
-$rowsPerPage = isset($_POST['rowsPerPage']) ? (int)$_POST['rowsPerPage'] : 10;
-$search = isset($_POST['search']) ? $_POST['search'] : '';
 
 // 显示文件路径输入表单
 if (empty($filePath)) {
@@ -108,6 +75,6 @@ if (empty($filePath)) {
     echo '</form>';
 } else {
     // 调用函数并输出结果
-    echo displayCsv($filePath, $page, $rowsPerPage, $search);
+    echo displayCsv($filePath);
 }
 ?>
