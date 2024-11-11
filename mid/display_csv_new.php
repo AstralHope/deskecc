@@ -21,7 +21,7 @@ function makeLinkforCluster($text) {
 
 function makeLinkforNode($text) {
     // 使用 urlencode 函数对文本进行编码，以确保 URL 安全
-    $encodedText = urlencode($text);
+    $encodedText = urlencode($text. '.txt');
     // 返回超链接
     return '<a href="view_txt.php?file=' . $encodedText . '">' . htmlspecialchars($text) . '</a>';
 }
