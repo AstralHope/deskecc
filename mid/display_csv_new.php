@@ -1,5 +1,5 @@
 <?php
-function makeLink($text) {
+function makeLinkforCluster($text) {
     // 定义基础路径常量
     $BASEPATH = '/data/deskecc/ack/clusterinfo/';
     
@@ -10,10 +10,19 @@ function makeLink($text) {
     $url = 'display_csv_new.php';
     return '<form method="POST" action="' . htmlspecialchars($url) . '" style="display: inline; white-space: nowrap;">
                 <input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">
+                <input type="hidden" name="columnIndex" value="4">
+                <input type="hidden" name="function" value="makeLinkforNode">
                 <button type="submit" style="color: blue; text-decoration: underline; background: none; border: none; padding: 0; cursor: pointer; white-space: nowrap;">
                     ' . htmlspecialchars($text) . '
                 </button>
             </form>';
+}
+
+function makeLinkforNode($text) {
+    // 使用 urlencode 函数对文本进行编码，以确保 URL 安全
+    $encodedText = urlencode($text);
+    // 返回超链接
+    return '<a href="view_txt.php?file=' . $encodedText . '">' . htmlspecialchars($text) . '</a>';
 }
 
 function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, $hiddenColumns = '') {
@@ -232,7 +241,7 @@ if (empty($filePath)) {
     echo '<form method="POST">';
     echo 'CSV 文件路径: <input type="text" name="file" required>';
     echo ' 额外处理列 (从0开始): <input type="number" name="columnIndex" min="0">';
-    echo '函数: <input type="text" name="function" value="makeLink">';
+    echo '函数: <input type="text" name="function" value="makeLinkforCluster">';
     echo '隐藏列: <input type="text" name="hiddenClumnIndex">';
     echo '<button type="submit">显示数据</button>';
     echo '</form>';
