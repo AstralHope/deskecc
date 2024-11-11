@@ -21,9 +21,10 @@ function makeLinkforCluster($text) {
 
 function makeLinkforNode($text) {
     // 使用 urlencode 函数对文本进行编码，以确保 URL 安全
+    $encodedText = $text. '.txt';
     //$encodedText = urlencode($text. '.txt');
     // 返回超链接
-    return '<a href="view_txt.php?file=' . text . ' ".txt">' . htmlspecialchars($text) . '</a>';
+    return '<a href="view_txt.php?file=' . $encodedText . '">' . htmlspecialchars($text) . '</a>';
 }
 
 function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, $hiddenColumns = '') {
