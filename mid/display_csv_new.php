@@ -16,15 +16,15 @@ function makeLink($text) {
             </form>';
 }
 
-function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) {
+function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, $hiddenColumns = '') {
     // 定义基础路径常量
-    $BASEPATH = '';
+    $BASEPATH = '/path/to/csv/files/';
     $fullFilePath = $BASEPATH . $filePath;
     
     $fileName = pathinfo($filePath, PATHINFO_FILENAME);
 
     if (!file_exists($fullFilePath) || !is_readable($fullFilePath)) {
-        return $fullFilePath.'文件不存在或不可读取';
+        return '文件不存在或不可读取';
     }
 
     $data = [];
@@ -43,6 +43,9 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) 
         ? 'function(cell) { return `' . $extraFunction('${cell}') . '`; }'
         : 'function(cell) { return cell; }';
 
+    // 解析隐藏的列索引
+    $hiddenColumnsArray = array_map('intval', explode(',', $hiddenColumns));
+
     // 输出 HTML 和 JavaScript，包含搜索和分页功能
     $output = '<div>';
     $output .= '<h1>' . htmlspecialchars($fileName) . '</h1>';
@@ -51,7 +54,11 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) 
     $output .= '<button id="clearSearchBtn" onclick="clearSearch()">清除筛选</button>';
 
     $output .= '<table border="1" id="csvTable"><thead><tr>';
-    foreach ($data[0] as $header) {
+    foreach ($data[0] as $index => $header) {
+        // 如果当前列在隐藏列列表中，跳过该列
+        if (in_array($index + 1, $hiddenColumnsArray)) {
+            continue;
+        }
         $output .= '<th>' . htmlspecialchars($header) . '</th>';
     }
     $output .= '</tr></thead><tbody id="tableBody"></tbody></table>';
@@ -74,6 +81,7 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) 
         var rowsPerPage = 10;
         var extraColumnIndex = ' . ($extraColumnIndex !== null ? (int)$extraColumnIndex : 'null') . ';
         var extraFunction = ' . $extraJsFunction . ';
+        var hiddenColumns = ' . json_encode($hiddenColumnsArray) . ';  // 传递隐藏列信息
         
         // 渲染表格数据
         function renderTable(page = 1) {
@@ -101,15 +109,17 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) 
                     } else {
                         td.textContent = cell;
                     }
+                    
+                    // 如果当前列需要隐藏，则跳过该列的渲染
+                    if (hiddenColumns.includes(index + 1)) {
+                        td.style.display = "none";  // 隐藏列
+                    }
+
                     tr.appendChild(td);
                 });
                 tableBody.appendChild(tr);
             }
         }
-
-        // 确保表格自动调整列宽以适应内容
-        var table = document.getElementById("csvTable");
-        table.style.tableLayout = "auto"; // 使用自动布局以允许自适应宽度
 
         // 更新分页按钮
         function updatePagination(page) {
@@ -190,14 +200,18 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null) 
 // 处理表单提交
 $filePath = isset($_POST['file']) ? $_POST['file'] : '';
 $extraColumnIndex = isset($_POST['columnIndex']) ? intval($_POST['columnIndex']) : null;
+$extraFunction = isset($_POST['function']) ? $_POST['file'] : null;
+$hiddenColumns = isset($_POST['hiddenClumnIndex']) ? $_POST['file'] : '';
 
 if (empty($filePath)) {
     echo '<form method="POST">';
     echo 'CSV 文件路径: <input type="text" name="file" required>';
     echo ' 额外处理列 (从0开始): <input type="number" name="columnIndex" min="0">';
+    echo 'CSV 文件路径: <input type="text" name="function" value="makeLink">';
+    echo 'CSV 文件路径: <input type="text" name="hiddenClumnIndex">';
     echo '<button type="submit">显示数据</button>';
     echo '</form>';
 } else {
-    echo displayCsv($filePath, $extraColumnIndex, 'makeLink');
+    echo displayCsv($filePath, $extraColumnIndex, $extraFunction, $hiddenColumns);
 }
 ?>
