@@ -12,7 +12,7 @@ function makeLinkforCluster($text) {
                 <input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">
                 <input type="hidden" name="columnIndex" value="3">
                 <input type="hidden" name="function" value="makeLinkforNode">
-                <input type="hidden" name="hiddenClumnIndex" value="1">
+                <input type="hidden" name="hiddenClumnIndex" value="1,2">
                 <button type="submit" style="color: blue; text-decoration: underline; background: none; border: none; padding: 0; cursor: pointer; white-space: nowrap;">
                     ' . htmlspecialchars($text) . '
                 </button>
@@ -241,7 +241,7 @@ $hiddenColumns = isset($_POST['hiddenClumnIndex']) ? $_POST['hiddenClumnIndex'] 
 if (empty($filePath)) {
     echo '<form method="POST">';
     echo 'CSV 文件路径: <input type="text" name="file" required>';
-    echo ' 额外处理列 (从0开始): <input type="number" value=“1” name="columnIndex" min="0">';
+    echo ' 额外处理列 (从0开始): <input type="number" name="columnIndex" min="0">';
     echo '函数: <input type="text" name="function" value="makeLinkforCluster">';
     echo '隐藏列: <input type="text" name="hiddenClumnIndex">';
     echo '<button type="submit">显示数据</button>';
