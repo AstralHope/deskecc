@@ -30,35 +30,86 @@ function displayCsv($filePath) {
     foreach ($data[0] as $header) {
         $output .= '<th>' . htmlspecialchars($header) . '</th>';
     }
-    $output .= '</tr></thead><tbody>';
+    $output .= '</tr></thead><tbody id="tableBody"></tbody></table>';
 
-    // 输出所有行数据
-    for ($i = 1; $i < count($data); $i++) {
-        $output .= '<tr>';
-        foreach ($data[$i] as $cell) {
-            $output .= '<td>' . htmlspecialchars($cell) . '</td>';
-        }
-        $output .= '</tr>';
-    }
+    // 翻页控件
+    $output .= '<div id="pagination"></div>';
 
-    $output .= '</tbody></table>';
-    $output .= '</div>';
-
-    // JavaScript 代码，用于在客户端实现搜索过滤功能
+    // 数据总数和每页显示的数量
     $output .= '<script>
+        var data = ' . $jsonData . ';
+        var currentPage = 1;
+        var rowsPerPage = 10;
+
+        // 渲染表格数据
+        function renderTable(page = 1) {
+            var start = (page - 1) * rowsPerPage + 1;
+            var end = Math.min(start + rowsPerPage - 1, data.length - 1);
+
+            // 更新分页
+            updatePagination(page);
+
+            var tableBody = document.getElementById("tableBody");
+            tableBody.innerHTML = ""; // 清空现有数据
+
+            // 列出当前页的数据
+            for (var i = start; i <= end; i++) {
+                var row = data[i];
+                var tr = document.createElement("tr");
+                row.forEach(function(cell) {
+                    var td = document.createElement("td");
+                    td.textContent = cell;
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            }
+        }
+
+        // 更新分页按钮
+        function updatePagination(page) {
+            var totalPages = Math.ceil((data.length - 1) / rowsPerPage);
+            var paginationDiv = document.getElementById("pagination");
+            paginationDiv.innerHTML = "";
+
+            // 显示上一页按钮
+            if (page > 1) {
+                var prevBtn = document.createElement("button");
+                prevBtn.textContent = "上一页";
+                prevBtn.onclick = function() { renderTable(page - 1); };
+                paginationDiv.appendChild(prevBtn);
+            }
+
+            // 显示页码
+            paginationDiv.appendChild(document.createTextNode(" 第 " + page + " 页 / 共 " + totalPages + " 页 "));
+
+            // 显示下一页按钮
+            if (page < totalPages) {
+                var nextBtn = document.createElement("button");
+                nextBtn.textContent = "下一页";
+                nextBtn.onclick = function() { renderTable(page + 1); };
+                paginationDiv.appendChild(nextBtn);
+            }
+        }
+
+        // 搜索功能
         function filterTable() {
             var input = document.getElementById("searchInput");
             var filter = input.value.toLowerCase();
-            var table = document.getElementById("csvTable");
-            var tr = table.getElementsByTagName("tr");
+            var filteredData = data.filter(function(row, index) {
+                if (index === 0) return true; // 保留表头
+                return row.some(function(cell) {
+                    return cell.toLowerCase().indexOf(filter) !== -1;
+                });
+            });
 
-            // 循环表格中的每一行，检查是否匹配搜索内容
-            for (var i = 1; i < tr.length; i++) {
-                var row = tr[i];
-                var txtValue = row.textContent || row.innerText;
-                row.style.display = txtValue.toLowerCase().indexOf(filter) > -1 ? "" : "none";
-            }
+            // 更新数据并渲染第一页
+            data = filteredData;
+            currentPage = 1;
+            renderTable(currentPage);
         }
+
+        // 初始化
+        renderTable(currentPage);
     </script>';
 
     return $output;
