@@ -4,7 +4,7 @@ function makeLink($text) {
     $BASEPATH = '/data/deskecc/ack/clusterinfo/';
     
     // 拼接文件路径
-    $filePath = $BASEPATH . $text;
+    $filePath = $BASEPATH . $text . '.csv';
     
     // 生成超链接
     $url = 'display_csv_new.php';
