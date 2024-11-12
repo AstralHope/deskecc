@@ -31,7 +31,7 @@ function findMatchingFiles($directory, $pattern) {
 
 // 示例用法
 $directory = "/data/deskecc/ack/index/";
-$pattern = "/^.*\cluster_info.csv$/";  // 匹配所有 .txt 文件
+$pattern = "/^.*\.csv$/";  // 匹配所有 .txt 文件
 findMatchingFiles($directory, $pattern);
 ?>
 
