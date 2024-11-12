@@ -2,7 +2,7 @@
 function findMatchingFiles($directory, $pattern = "/.*/") {
     // 确保目录存在并且是一个目录
     if (!is_dir($directory)) {
-        echo "目录不存在或不是一个有效目录";
+        echo $directory . "目录不存在或不是一个有效目录";
         return;
     }
 
