@@ -1,5 +1,5 @@
 <?php
-function findMatchingFiles($directory, $pattern = "/.*/") {
+function findMatchingFiles($directory = "/", $pattern = "/.*/") {
     // 确保目录存在并且是一个目录
     if (!is_dir($directory)) {
         echo $directory . "目录不存在或不是一个有效目录";
@@ -36,7 +36,14 @@ function findMatchingFiles($directory, $pattern = "/.*/") {
 }
 
 // 示例用法
-$directory = "/data/deskecc/ack/index/";
-$pattern = "/.*cluster_info\.csv$/";  // 仅匹配以 cluster_info.csv 结尾的文件
+//$directory = "/data/deskecc/ack/index/";
+//$pattern = "/.*nodes_info\.csv$/";  // 仅匹配以 cluster_info.csv 结尾的文件
+
+// 处理表单提交
+$directory = isset($_POST['directory']) ? $_POST['directory'] : '/data/deskecc/ack/index/';
+$pattern = isset($_POST['pattern']) ? intval($_POST['pattern']) : '/.*/';
+
+
+
 findMatchingFiles($directory, $pattern);
 ?>
