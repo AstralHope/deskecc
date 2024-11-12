@@ -27,10 +27,10 @@ function findMatchingFiles($directory, $pattern = "/.*/") {
     foreach ($matchingFiles as $file) {
         $filePath = $directory . '/' . $file;
         echo '<form action="display_csv_new.php" method="POST" style="display:inline;">';
-        echo '<input type="hidden" name="file" value="' . htmlspecialchars(pathinfo($filePath, PATHINFO_FILENAME)) . '">';
+        echo '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
         echo '<input type="hidden" name="columnIndex" value="1">';
         echo '<input type="hidden" name="function" value="makeLinkforCluster">';
-        echo '<button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer;">' . htmlspecialchars($file) . '</button>';
+        echo '<button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer;">' . htmlspecialchars($pathinfo($file, PATHINFO_FILENAME)) . '</button>';
         echo '</form><br>';
     }
 }
