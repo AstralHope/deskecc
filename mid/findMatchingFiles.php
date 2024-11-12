@@ -36,7 +36,7 @@ function findMatchingFiles($directory, $pattern = "/.*/") {
 }
 
 // 示例用法
-$directory = "/path/to/your/directory";
+$directory = "/data/deskecc/ack/index/";
 $pattern = "/.*cluster_info\.csv$/";  // 仅匹配以 cluster_info.csv 结尾的文件
 findMatchingFiles($directory, $pattern);
 ?>
