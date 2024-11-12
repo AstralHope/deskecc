@@ -1,5 +1,5 @@
 <?php
-function findMatchingFiles($directory, $pattern) {
+function findMatchingFiles($directory, $pattern = "/.*/") {
     // 确保目录存在并且是一个目录
     if (!is_dir($directory)) {
         echo "目录不存在或不是一个有效目录";
@@ -23,15 +23,20 @@ function findMatchingFiles($directory, $pattern) {
         }
     }
 
-    // 输出匹配的文件名
+    // 输出匹配的文件名为 POST 表单链接
     foreach ($matchingFiles as $file) {
-        echo $file . PHP_EOL;
+        $filePath = $directory . '/' . $file;
+        echo '<form action="display_csv_new.php" method="POST" style="display:inline;">';
+        echo '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
+        echo '<input type="hidden" name="columnIndex" value="1">';
+        echo '<input type="hidden" name="function" value="makeLinkforCluster">';
+        echo '<button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer;">' . htmlspecialchars($file) . '</button>';
+        echo '</form><br>';
     }
 }
 
 // 示例用法
-$directory = "/data/deskecc/ack/index/";
-$pattern = "/cluster_info\.csv$/";  // 匹配所有 .txt 文件
+$directory = "/path/to/your/directory";
+$pattern = "/.*cluster_info\.csv$/";  // 仅匹配以 cluster_info.csv 结尾的文件
 findMatchingFiles($directory, $pattern);
 ?>
-
