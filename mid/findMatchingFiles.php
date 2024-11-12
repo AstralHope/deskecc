@@ -41,7 +41,7 @@ function findMatchingFiles($directory = "/", $pattern = "/.*/") {
 
 // 处理表单提交
 $directory = isset($_POST['directory']) ? $_POST['directory'] : '/data/deskecc/ack/index/';
-$pattern = isset($_POST['pattern']) ? intval($_POST['pattern']) : '/.*/';
+$pattern = isset($_POST['pattern']) ? $_POST['pattern'] : '/.*/';
 
 
 
