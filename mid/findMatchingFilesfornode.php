@@ -29,8 +29,7 @@ function findMatchingFiles($directory = "/", $pattern = "/.*/") {
         echo '<form action="display_csv_new.php" method="POST" style="display:inline;">';
         echo '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
         echo '<input type="hidden" name="columnIndex" value="1">';
-        echo '<input type="hidden" name="function" value="makeLinkforNode">';
-        <input type="hidden" name="hiddenClumnIndex" value="1,2">
+        echo '<input type="hidden" name="function" value="makeLinkforCluster">';
         echo '<button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer;">' . htmlspecialchars(pathinfo($file, PATHINFO_FILENAME)) . '</button>';
         echo '</form><br>';
     }
