@@ -221,6 +221,11 @@ body{
     color:#fff;
 }
 
+.menu .level02 li form:hover{
+    background-color: #1378f0;
+    color:#fff;
+}
+
 .menu .level02 li i{
     font-size:12px;
     float: left;
@@ -233,6 +238,9 @@ body{
 }
 
 .menu .level02 .active a{
+    color:#ffae00;
+}
+.menu .level02 .active form{
     color:#ffae00;
 }
 
