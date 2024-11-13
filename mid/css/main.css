@@ -441,6 +441,17 @@ body{
     margin-bottom:10px;
 }
 
+/* 版本号小模块 */
+.version {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 5px 10px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.5); /* 半透明颜色 */
+    background-color: transparent;
+}
+
 
 
 
