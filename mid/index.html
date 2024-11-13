@@ -6,6 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="max-age=3600">
     <title>中间件-桌面ECC</title>
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
@@ -34,12 +35,20 @@
                         <input type="hidden" name="directory" value="/data/deskecc/ack/index/">
                         <input type="hidden" name="pattern" value="/.*nodes_info\.csv$/">
                         <button type="submit" style="background:none; border:none; cursor:pointer;">
-                            <i class="iconfont icon-previewright"></i><span>ACK集群</span>
+                            <i class="iconfont icon-previewright"></i><span>节点pod信息</span>
                         </button>
                     </form>
                 </li>
-                <li><a href="findMatchingFiles.php" target="main_frame"><i class="iconfont icon-previewright"></i><span>ACK集群</span></a></li>
-                <li><a  href="开发中，敬请期待....html" target="main_frame"><i class="iconfont icon-previewright"></i><span>SOFAMQ</span></a></li>
+                <li>
+                    <form action="findMatchingFiles.php" method="POST" target="main_frame">
+                        <input type="hidden" name="directory" value="/data/deskecc/ack/index/">
+                        <input type="hidden" name="pattern" value="/.*cluster_info\.csv$/">
+                        <button type="submit" style="background:none; border:none; cursor:pointer;">
+                            <i class="iconfont icon-previewright"></i><span>节点pod信息</span>
+                        </button>
+                    </form>
+                </li>
+                <li><a  href="开发中，敬请期待....html" target="main_frame"><i class="iconfont icon-previewright"></i><span>SOFAMQ信息（建设中）</span></a></li>
             </ul>
 
             <div class="level01"><a href="#"><i class="iconfont icon-key"></i><span>小工具</span><b
