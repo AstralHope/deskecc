@@ -30,7 +30,6 @@ function findMatchingFiles($directory = "/", $pattern = "/.*/") {
         echo '<input type="hidden" name="file" value="' . htmlspecialchars($filePath) . '">';
         echo '<input type="hidden" name="columnIndex" value="1">';
         echo '<input type="hidden" name="function" value="makeLinkforNode">';
-        <input type="hidden" name="hiddenClumnIndex" value="1,2">
         echo '<button type="submit" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer;">' . htmlspecialchars(pathinfo($file, PATHINFO_FILENAME)) . '</button>';
         echo '</form><br>';
     }
