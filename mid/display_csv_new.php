@@ -27,6 +27,14 @@ function makeLinkforNode($text) {
     return '<a href="view_txt.php?file=' . $encodedText . '">' . htmlspecialchars($text) . '</a>';
 }
 
+function makeLinkforNginx($text) {
+    // 使用 urlencode 函数对文本进行编码，以确保 URL 安全
+    $encodedText = $text. '.conf';
+    //$encodedText = urlencode($text. '.txt');
+    // 返回超链接
+    return '<a href="view_conf.php?file=' . $encodedText . '">' . htmlspecialchars($text) . '</a>';
+}
+
 function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, $hiddenColumns = '') {
     // 定义基础路径常量为空
     $BASEPATH = '';
@@ -63,6 +71,8 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
     $output .= '<input type="text" id="searchInput" placeholder="搜索..." onkeydown="checkEnter(event)" style="margin-right: 10px;">';
     $output .= '<button id="searchBtn" onclick="filterTable()">筛选</button>';
     $output .= '<button id="clearSearchBtn" onclick="clearSearch()">清除筛选</button>';
+    $output .= '<button onclick="exportTableToCSV()">导出结果为CSV</button>'; // ⭐ 修改点：使用onclick
+
 
     $output .= '<table border="1" id="csvTable"><thead><tr>';
     foreach ($data[0] as $index => $header) {
@@ -92,65 +102,51 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
         var rowsPerPage = 10;
         var extraColumnIndex = ' . ($extraColumnIndex !== null ? (int)$extraColumnIndex : 'null') . ';
         var extraFunction = ' . $extraJsFunction . ';
-        var hiddenColumns = ' . json_encode($hiddenColumnsArray) . ';  // 传递隐藏列信息
-        var sortAscending = true; // 默认升序
+        var hiddenColumns = ' . json_encode($hiddenColumnsArray) . ';
+        var sortAscending = true;
         
         // 渲染表格数据
         function renderTable(page = 1) {
             var start = (page - 1) * rowsPerPage + 1;
             var end = Math.min(start + rowsPerPage - 1, data.length - 1);
-
-            // 更新总项数
             document.getElementById("totalItems").textContent = data.length - 1;
-
-            // 更新分页
             updatePagination(page);
-
+        
             var tableBody = document.getElementById("tableBody");
-            tableBody.innerHTML = ""; // 清空现有数据
-
-            // 列出当前页的数据
+            tableBody.innerHTML = "";
+        
             for (var i = start; i <= end; i++) {
                 var row = data[i];
                 var tr = document.createElement("tr");
                 row.forEach(function(cell, index) {
+                    if (hiddenColumns.includes(index + 1)) return;
                     var td = document.createElement("td");
-                    // 如果当前列是指定的 extraColumnIndex，则调用 extraFunction 处理单元格
                     if (index === extraColumnIndex && typeof extraFunction === "function") {
                         td.innerHTML = extraFunction(cell);
                     } else {
                         td.textContent = cell;
                     }
-                    
-                    // 如果当前列需要隐藏，则跳过该列的渲染
-                    if (hiddenColumns.includes(index + 1)) {
-                        td.style.display = "none";  // 隐藏列
-                    }
-
                     tr.appendChild(td);
                 });
                 tableBody.appendChild(tr);
             }
         }
-
+        
         // 更新分页按钮
         function updatePagination(page) {
             var totalPages = Math.ceil((data.length - 1) / rowsPerPage);
             var paginationDiv = document.getElementById("pagination");
             paginationDiv.innerHTML = "";
-
-            // 显示上一页按钮
+        
             if (page > 1) {
                 var prevBtn = document.createElement("button");
                 prevBtn.textContent = "上一页";
                 prevBtn.onclick = function() { renderTable(page - 1); };
                 paginationDiv.appendChild(prevBtn);
             }
-
-            // 显示页码
+        
             paginationDiv.appendChild(document.createTextNode(" 第 " + page + " 页 / 共 " + totalPages + " 页 "));
-
-            // 显示下一页按钮
+        
             if (page < totalPages) {
                 var nextBtn = document.createElement("button");
                 nextBtn.textContent = "下一页";
@@ -158,40 +154,36 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
                 paginationDiv.appendChild(nextBtn);
             }
         }
-
+        
         // 排序表格
         function sortTable(columnIndex) {
-            var isNumeric = !isNaN(data[1][columnIndex]); // 判断该列是否为数字类型
-            // 排除表头行，即从 data[1] 开始进行排序
+            var isNumeric = !isNaN(data[1][columnIndex]);
             var rows = data.slice(1); // 排除表头
-
+        
             rows.sort(function(a, b) {
                 var cellA = a[columnIndex];
                 var cellB = b[columnIndex];
                 if (isNumeric) {
-                    return sortAscending ? cellA - cellB : cellB - cellA; // 数字排序
+                    return sortAscending ? cellA - cellB : cellB - cellA;
                 } else {
                     return sortAscending 
                         ? cellA.localeCompare(cellB) 
-                        : cellB.localeCompare(cellA); // 字符串排序
+                        : cellB.localeCompare(cellA);
                 }
             });
-
-            // 重新组合表格数据
-            data = [data[0]].concat(rows); // 将表头加回排序后的数据
-            sortAscending = !sortAscending; // 切换排序顺序
-            renderTable(currentPage); // 重新渲染表格
+        
+            data = [data[0]].concat(rows);
+            sortAscending = !sortAscending;
+            renderTable(currentPage);
         }
-
+        
         // 搜索功能
         function filterTable() {
             var input = document.getElementById("searchInput");
             var filter = input.value.toLowerCase();
             if (filter === "") {
-                // 如果没有输入内容，则恢复原始数据
                 data = JSON.parse(JSON.stringify(originalData));
             } else {
-                // 根据搜索内容过滤数据
                 data = originalData.filter(function(row, index) {
                     if (index === 0) return true; // 保留表头
                     return row.some(function(cell) {
@@ -199,34 +191,61 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
                     });
                 });
             }
-
-            // 更新数据并渲染第一页
             currentPage = 1;
             renderTable(currentPage);
         }
-
-        // 检查回车键是否按下
+        
+        // 检查回车键
         function checkEnter(event) {
             if (event.key === "Enter") {
-                filterTable();  // 如果按下回车键，触发筛选
+                filterTable();
             }
         }
-
-        // 清除筛选
+        
+        // 清除搜索
         function clearSearch() {
-            document.getElementById("searchInput").value = "";  // 清空搜索框
-            data = JSON.parse(JSON.stringify(originalData));  // 恢复原始数据
-            currentPage = 1;  // 重置页码
-            renderTable(currentPage);  // 重新渲染表格
+            document.getElementById("searchInput").value = "";
+            data = JSON.parse(JSON.stringify(originalData));
+            currentPage = 1;
+            renderTable(currentPage);
         }
-
-        // 改变每页显示的行数
+        
+        // 改变每页显示行数
         function changeRowsPerPage() {
             rowsPerPage = parseInt(document.getElementById("rowsPerPage").value);
             renderTable(currentPage);
         }
-
-        // 初始化
+        
+        // ⭐ 导出 CSV 功能（onclick 模式，不用 id）
+        function exportTableToCSV() {
+            var rows = [];
+            // 表头
+            var header = [];
+            data[0].forEach(function(cell, index){
+                if (!hiddenColumns.includes(index + 1)) header.push(cell);
+            });
+            rows.push(header);
+        
+            // 数据行
+            for (var i = 1; i < data.length; i++) {
+                var row = [];
+                data[i].forEach(function(cell, index){
+                    if (!hiddenColumns.includes(index + 1)) row.push(cell);
+                });
+                rows.push(row);
+            }
+        
+            var csv = rows.map(function(r){
+                return r.map(function(v){ return "\\""+String(v).replace(/\\"/g,"\\"\\"")+"\\""; }).join(",");
+            }).join("\\n");
+        
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(new Blob([csv], {type: "text/csv;charset=utf-8;"}));
+            link.download = "' . $fileName . '_filtered.csv";
+            link.click();
+        }
+        
+        // 初始化渲染
         renderTable(currentPage);
     </script>';
 
