@@ -27,7 +27,7 @@ function findMatchingFiles($directory = "/", $pattern = "/.*/") {
     foreach ($matchingFiles as $file) {
         echo '<a href=\'view_sofamq.php?file=' . $file . '>';
         echo strtok($file, '.');
-        echo '</a>';
+        echo '</a><br/>';
     }
 }
 
