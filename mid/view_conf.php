@@ -24,7 +24,7 @@ if (isset($_GET['file'])) {
     $filename = str_replace("/", "", $filename); // 防止路径遍历攻击
 
     // 检查文件是否存在
-    if (file_exists("/data/deskecc/nginx/configinfo" . $filename) && (pathinfo($filename, PATHINFO_EXTENSION) === 'txt') || (pathinfo($filename, PATHINFO_EXTENSION) === 'conf') ) {
+    if (file_exists("/data/deskecc/nginx/configinfo/" . $filename) && (pathinfo($filename, PATHINFO_EXTENSION) === 'txt') || (pathinfo($filename, PATHINFO_EXTENSION) === 'conf') ) {
         // 读取文件内容并显示
         $file_content = file_get_contents("/data/deskecc/nginx/configinfo" . $filename);
         echo "<pre>" . htmlspecialchars($file_content) . "</pre>";
