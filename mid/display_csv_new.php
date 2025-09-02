@@ -90,6 +90,7 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
             var colT3 = row[index] || "";
             var encoded = colT + "_" + colT1 + "_" + colT3 + ".conf";
             return "<a href=\'view_conf.php?file=" + encoded + "\'>" + cell + "</a>";
+            
         }
 
         // ===== 渲染表格 =====
