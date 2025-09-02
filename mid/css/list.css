@@ -2,57 +2,75 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   background-color: #f0f2f5;
   color: #333;
-  padding: 20px;
-  line-height: 1.6;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px; /* 增加表单之间的间距 */
+  min-height: 100vh;
+  margin: 0;
 }
 
 /* 隐藏内联样式，使用CSS文件统一管理 */
 form[style*="display:inline;"] {
   display: block !important;
-  margin-bottom: 8px; /* 增加表单之间的间距 */
+  width: 100%;
+  max-width: 400px; /* 限制表单最大宽度 */
 }
 
-/* 按钮的通用样式 */
+/* 按钮的卡片化样式 */
 button[type="submit"] {
-  background-color: transparent;
-  border: none;
-  color: #007bff; /* 链接的标准蓝色 */
-  text-decoration: none;
-  cursor: pointer;
-  padding: 0; /* 移除按钮默认的内边距 */
+  display: block;
+  width: 100%;
+  padding: 15px 20px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  color: #333;
   font-size: 16px;
   font-weight: 500;
-  transition: color 0.2s ease-in-out;
+  cursor: pointer;
+  text-align: left; /* 文字左对齐 */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* 平滑过渡效果 */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* 微妙的阴影 */
+  position: relative;
+  overflow: hidden;
 }
 
-/* 按钮悬停时的效果 */
+/* 悬停时的交互效果 */
 button[type="submit"]:hover {
-  color: #0056b3; /* 悬停时变深蓝色 */
-  text-decoration: underline; /* 悬停时显示下划线 */
+  border-color: #c0c0c0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px); /* 悬浮效果 */
 }
 
-/* 按钮激活时的效果 */
+/* 悬停时的伪元素背景高亮效果 */
+button[type="submit"]:hover::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* 激活时的效果 */
 button[type="submit"]:active {
-  color: #004085;
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* 容器和列表样式 */
-.link-list-container {
-  background-color: #ffffff;
-  padding: 20px 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  max-width: 500px;
-  margin: 40px auto;
+/* 添加一个小箭头或图标，表示这是一个链接/入口 */
+button[type="submit"]::before {
+  content: "→";
+  font-size: 18px;
+  color: #999;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.3s ease-in-out;
 }
 
-h1 {
-  text-align: center;
-  color: #555;
-  margin-bottom: 25px;
-  font-weight: 600;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 15px;
+button[type="submit"]:hover::before {
+  transform: translateY(-50%) translateX(5px);
+  color: #007bff; /* 悬停时箭头变色 */
 }
 
 
