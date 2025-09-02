@@ -25,7 +25,7 @@ function findMatchingFiles($directory = "/", $pattern = "/.*/") {
 
     // 输出匹配的文件名为 POST 表单链接
     foreach ($matchingFiles as $file) {
-        echo '<a href=\'view_sofamq.php?file=' . $file . '>';
+        echo '<a href=view_sofamq.php?file=' . htmlspecialchars($file) . '>';
         echo strtok($file, '.');
         echo '</a><br/>';
     }
