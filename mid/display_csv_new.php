@@ -84,13 +84,13 @@ function displayCsv($filePath, $extraColumnIndex = null, $extraFunction = null, 
             return "<a href=\'view_txt.php?file=" + encoded + "\'>" + cell + "</a>";
         }
 
-        function makeLinkForNginx(cell, row, index) {
+        function makeLinkforNginx(cell, row, index) {
             var colT  = row[index - 3] || "";
             var colT1 = row[index - 2] || "";
             var colT3 = row[index] || "";
             var encoded = colT + "_" + colT1 + "_" + colT3 + ".conf";
             return "<a href=\'view_conf.php?file=" + encoded + "\'>" + cell + "</a>";
-            
+
         }
 
         // ===== 渲染表格 =====
