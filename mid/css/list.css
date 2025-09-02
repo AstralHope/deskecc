@@ -54,3 +54,47 @@ h1 {
   border-bottom: 1px solid #eee;
   padding-bottom: 15px;
 }
+
+
+/* 基础链接样式 */
+a {
+  color: #007bff; /* 链接的标准蓝色 */
+  text-decoration: none; /* 移除下划线 */
+  font-weight: 500;
+  transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out;
+}
+
+/* 链接悬停时的效果 */
+a:hover {
+  color: #0056b3; /* 悬停时变深蓝色 */
+  text-decoration: underline; /* 悬停时显示下划线 */
+}
+
+/* 链接激活时的效果 */
+a:active {
+  color: #004085;
+}
+
+/* 访问过的链接样式 */
+a:visited {
+  color: #6a11cb; /* 访问过的链接可以有不同的颜色，让用户知道他们已经点击过 */
+}
+
+/* 如果你希望链接看起来像按钮，可以添加一个类 */
+a.button-link {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+a.button-link:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  text-decoration: none; /* 悬停时移除下划线，保持按钮外观 */
+}

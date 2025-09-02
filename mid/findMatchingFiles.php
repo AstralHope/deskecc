@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="css/list.css">
 <?php
 function findMatchingFiles($directory = "/", $pattern = "/.*/") {
     // 确保目录存在并且是一个目录

@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="css/list.css">
 <?php
-function findMatchingFiles($directory = "/", $pattern = "/-*/") {
+function findMatchingFiles($directory = "/", $pattern = "/.*sofamq.*/") {
     // 确保目录存在并且是一个目录
     if (!is_dir($directory)) {
         echo $directory . "目录不存在或不是一个有效目录";
