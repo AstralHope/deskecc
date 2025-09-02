@@ -2,31 +2,31 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   background-color: #f0f2f5;
   color: #333;
-  padding: 20px; /* 减少页面内边距 */
+  padding: 15px; /* 进一步减小页面内边距 */
 }
 
 /* 隐藏内联样式，使用CSS文件统一管理 */
 form[style*="display:inline;"] {
   display: block !important;
-  max-width: 600px; /* 增加表单的最大宽度 */
-  margin-bottom: 8px; /* 减小表单之间的间距 */
+  max-width: 600px;
+  margin-bottom: 4px; /* 大幅减小表单之间的间距 */
 }
 
 /* 按钮的卡片化样式 */
 button[type="submit"] {
   display: block;
   width: 100%;
-  padding: 12px 18px; /* 减小内边距，使按钮更紧凑 */
+  padding: 10px 15px; /* 进一步减小内边距 */
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
-  border-radius: 8px; /* 减小圆角 */
+  border-radius: 6px; /* 减小圆角，更显硬朗 */
   color: #333;
-  font-size: 15px; /* 稍微减小字体大小 */
+  font-size: 14px; /* 减小字体大小 */
   font-weight: 500;
   cursor: pointer;
-  text-align: left; /* 文字左对齐 */
+  text-align: left;
   transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); /* 更细微的阴影 */
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03); /* 几乎不可见的阴影 */
   position: relative;
   overflow: hidden;
 }
@@ -34,29 +34,23 @@ button[type="submit"] {
 /* 悬停时的交互效果 */
 button[type="submit"]:hover {
   border-color: #c0c0c0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px); /* 悬浮效果更小 */
-}
-
-/* 悬停时的伪元素背景高亮效果 */
-button[type="submit"]:hover::after {
-  opacity: 1;
-  transform: scaleX(1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* 悬停时阴影稍明显 */
+  transform: translateY(-1px);
 }
 
 /* 激活时的效果 */
 button[type="submit"]:active {
   transform: translateY(0);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03);
 }
 
 /* 添加小箭头，表示链接 */
 button[type="submit"]::before {
   content: "→";
-  font-size: 16px;
+  font-size: 15px;
   color: #999;
   position: absolute;
-  right: 18px;
+  right: 15px;
   top: 50%;
   transform: translateY(-50%);
   transition: transform 0.2s ease-in-out;
