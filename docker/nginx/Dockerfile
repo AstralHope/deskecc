@@ -28,7 +28,6 @@ ENV CONFIG_ARGS "\
     --with-http_realip_module \
     --with-stream \
     --with-http_sub_module \
-    --with-http_sub_module \
     --add-module=../nginx-module-vts-0.2.4 \
     "
 
@@ -105,7 +104,7 @@ RUN ln -sf /dev/stdout /usr/nginx/logs/access.log && \
     ln -sf /dev/stderr /usr/nginx/logs/error.log
 
 # 暴露端口
-EXPOSE 8088
+EXPOSE 18088
 
 # 定义容器停止时发送给 Nginx 的信号，用于优雅退出
 STOPSIGNAL SIGQUIT
