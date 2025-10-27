@@ -1,0 +1,43 @@
+version: '3.8'
+
+name: midas
+
+services:
+  # ----------------- PHP-FPM 服务 -----------------
+  app:
+    # 引用事先编译并导入的 PHP 镜像名称
+    image: midas-php:8.2-fpm 
+    container_name: midas_php_app
+    pull_policy: never
+    volumes:
+      - ../mid:/usr/nginx/deskecc/mid 
+      - ../deskecc:/data/deskecc
+    networks:
+      - midas-network
+
+  # ----------------- Nginx 服务 -----------------
+  web:
+    # 引用事先编译并导入的 Nginx 镜像名称
+    image: midas-nginx:1.28.0 
+    container_name: midas_nginx_web
+    pull_policy: never
+    # 映射主机 8080 端口到容器 Nginx 监听的 8088 端口
+    ports:
+      # 宿主机 9019 -> 容器 9019 (主应用)
+      - "127.0.0.1:9019:9019" 
+      # 宿主机 18088 -> 容器 18088 (监控)
+      - "127.0.0.1:18088:18088"
+    volumes:
+      - ../mid:/usr/nginx/deskecc/mid
+      - ../deskecc:/data/deskecc
+      - ./nginx/midas.conf:/usr/nginx/conf/http.d/midas.conf
+
+    depends_on:
+      - app # 确保 PHP 服务先启动
+    networks:
+      - midas-network
+
+# ----------------- 网络定义 -----------------
+networks:
+  midas-network:
+    driver: bridge

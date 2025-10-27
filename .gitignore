@@ -24,3 +24,10 @@
 /app/Config/database.php
 /vendors/*
 .DS_Store
+
+# 1. 排除 deskecc 目录下的所有文件和目录。
+#    * 匹配所有文件。
+#    / 匹配所有子目录。
+/deskecc/*/*
+!/deskecc/*/
+!/deskecc/

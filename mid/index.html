@@ -93,7 +93,8 @@
             <i class="iconfont icon-search"></i>
         </form> -->
         <div class="user_center_link">
-            <a href="http://53.192.92.79:8088/status" onclick="setMenu(3,0)" target="_blank">Nginx-vts</a>
+            <!-- <a href="http://53.192.92.79:8088/status" onclick="setMenu(3,0)" target="_blank">Nginx-vts</a> -->
+            <a id="vtsStatusLink" href="#" onclick="setMenu(3,0)" target="_blank">Nginx-vts</a>
             <a href="user.html" onclick="setMenu(3,0)" target="main_frame">个人中心</a>
             <img src="images/3.jpg" alt="person">
             <a href="login.html"><i class="iconfont icon-tuichu"></i> 退出</a>
@@ -104,7 +105,7 @@
         <iframe src="欢迎使用MIDAS beta.html" frameborder="0" id="main_frame" name="main_frame" frameborder="0" scrolling="auto"></iframe>
     </div>
     <div>
-        1234
+        加载中...
     </div>
 
 
@@ -156,6 +157,40 @@
               $('.level02').children().eq(n).addClass('active').siblings().removeClass('active');
            }
         }
+
+        function setDynamicPortLink(elementId, targetPort, targetPath) {
+            const linkElement = document.getElementById(elementId);
+
+            if (!linkElement) {
+                console.error(`Error: Element with ID "${elementId}" not found.`);
+                return;
+            }
+
+            // 1. 获取当前页面的协议 (http: 或 https:)
+            const protocol = window.location.protocol; 
+    
+            // 2. 获取当前页面的主机名 (例如: example.com, localhost, 192.168.1.1)
+            const hostname = window.location.hostname; 
+
+            // 3. 构造完整的目标 URL
+            // 使用模板字符串组合： 协议://主机名:端口/路径
+            const targetUrl = `${protocol}//${hostname}:${targetPort}${targetPath}`;
+
+            // 4. 设置链接的 href 属性
+            linkElement.href = targetUrl;
+    
+            // 可选：打印链接以供调试
+            // console.log(`Set link "${elementId}" to: ${targetUrl}`);
+        }
+
+        // 确保在 DOM 完全加载后再调用函数
+        document.addEventListener('DOMContentLoaded', function() {
+            // 📢 调用函数，传入你的具体参数
+            setDynamicPortLink('vtsStatusLink', 8088, '/vts_status');
+
+            // 如果将来需要添加其他链接，只需再次调用即可：
+            // setDynamicPortLink('otherLink', 9090, '/admin_panel'); 
+        });
 
     </script>
 
